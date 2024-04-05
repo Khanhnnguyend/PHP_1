@@ -56,6 +56,10 @@ class ControlAction
         include 'View/update_product.php';
     }
 
+    public function page(){
+        echo "hahaha";
+    }
+
     public function addProperty(){
         include 'View/add_property.php';
     }

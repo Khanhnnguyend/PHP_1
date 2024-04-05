@@ -14,7 +14,8 @@
 		case 'index.php':{
    
             if(!isset($_GET['search'])
-            && !isset($_GET['filter_search'])){
+            && !isset($_GET['filter_search'])
+            &&!isset($_GET['page'])){
                 $controlAction->productView();
             }
 			break;
@@ -70,6 +71,11 @@
         
     }
 
+    if(isset($_GET['page']) ) {
+        
+        $controlAction->page();
+        
+    }
 
 
     

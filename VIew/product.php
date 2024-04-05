@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link rel="stylesheet" href="../CSS/product.css">
+    <link rel="stylesheet" href="https://localhost/PHP_1/CSS/product.css">
 
 
     </script>
@@ -87,7 +87,7 @@
 
                         </select>
 
-
+                              
                     </div>
                     <div class="col">
 
@@ -99,10 +99,10 @@
                         <input type="date" id="day_to" class="form-control" name="day_to">
                     </div>
                     <div class="col">
-                        <input type="text" id="price_from" class="form-control" placeholder="price from" name="price_from">
+                        <input type="number" id="price_from" class="form-control" placeholder="price from" name="price_from">
                     </div>
                     <div class="col">
-                        <input type="text" id="price_to" class="form-control" placeholder="price to" name="price_to">
+                        <input type="number" id="price_to" class="form-control" placeholder="price to" name="price_to">
                     </div>
                     <div class="col">
                         <button id="btn_filter" type="submit" name="filter_search" class="btn btn-primary btn-sm">filter</button>
@@ -172,7 +172,8 @@
                             </td>
 
                             <td style="">
-                                <a href="index.php?controller=update_product&product_id=<?php echo $product->id?>"><i id="" class="fa-solid fa-pencil update_icon"></i></a>
+                                <a href="index.php?controller=update_product&product_id=<?php echo $product->id?>" style="color:black; margin-right:10px">
+                                <i id="" class="fa-solid fa-pencil update_icon"></i></a>
                                 <i id="" class="fa-solid fa-trash delete_icon"></i>
                                 
                             </td>
@@ -196,17 +197,10 @@
                             <span aria-hidden="true">&laquo;</span>
                         </a>
                     </li>
-                    <li class="page-item"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="1">2</a></li>
-                    <li class="page-item"><a class="page-link" href="2">3</a></li>
+                    <li class="page-item"><a class="page-link page_1" href="">1</a></li>
+                    <li class="page-item"><a class="page-link" href="">2</a></li>
+                    <li class="page-item"><a class="page-link" href="">3</a></li>
 
-                    <li class="page-item"><a class="page-link" href="3">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-
-                    <li class="page-item"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
                     <li class="page-item">
                         <a class="page-link" href="#" aria-label="Next">
                             <span aria-hidden="true">&raquo;</span>
@@ -218,6 +212,37 @@
     </div>
 
     <script>
+
+document.querySelector('.page_1').addEventListener('click', function(event){
+        event.preventDefault(); 
+        var newState = { page: "index.php" };
+        var newTitle = "Page 1";
+        var newUrl = "/PHP_1/index.php?page=1";
+
+        history.pushState(newState, newTitle, newUrl);
+
+        document.title = newTitle;
+})
+
+function pagePag(){
+    
+                var xmlhttp = new XMLHttpRequest();
+
+                xmlhttp.open("GET", "index.php?page", true);
+                xmlhttp.send();
+                
+                xmlhttp.onreadystatechange = function() {
+                    if (this.readyState == 4 && this.status == 200) {
+                        console.log("chay")
+                        document.querySelector("tbody").innerHTML = this.responseText;
+                        deleBtn()
+                    }
+                };
+
+            
+}
+document.querySelector('.page_1').addEventListener('click',pagePag)
+
         function deleBtn() {
             var deleteIcon = document.querySelectorAll('.delete_icon')
 
@@ -312,7 +337,8 @@
         document.querySelector('#button-addon2').addEventListener('click', searchProduct)
     </script>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" 
+    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     <script src="http://localhost/PHP_1/JavaScript/validator.js"></script>
     <script src="http://localhost/PHP_1/JavaScript/search.js"></script>
 </body>

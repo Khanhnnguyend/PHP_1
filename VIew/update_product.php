@@ -12,41 +12,46 @@
 </head>
 
 <body>
-  <form action="" method="POST" enctype="multipart/form-data">
+  <form action="" method="POST" enctype="multipart/form-data" id="form_update_product">
     <div class="container">
       <div class="row">
         <div class="col">
-          <div class="mb-3">
+          <div class="mb-4">
             <label for="" class="form-label">Product name</label>
             <input type="text" value="<?php echo $product->product_name?>" class="form-control" id="" name="name_product">
+            <p class="form-message" style="font-size:10px; color:red;"></p>
 
           </div>
-          <div class="mb-3">
+          <div class="mb-4">
             <label for="" class="form-label">SKU</label>
             <input type="text" value="<?php echo $product->sku?>" class="form-control" id="" name="sku">
+            <p class="form-message" style="font-size:10px; color:red;"></p>
           </div>
 
-          <div class="mb-3">
+          <div class="mb-4">
             <label for="" class="form-label">Price</label>
             <input type="number" value="<?php echo $product->price?>" class="form-control" id="" name="price">
+            <p class="form-message" style="font-size:10px; color:red;"></p>
 
           </div>
-          <div class="mb-3">
+          <div class="mb-4">
             <label for="" class="form-label">Date</label>
             <input type="date" value="<?php echo $product->date?>" class="form-control" id="" name="date">
+            <p class="form-message" style="font-size:10px; color:red;"></p>
           </div>
          
         </div>
         <div class="col">
-          <div class="mb-3">
+          <div class="mb-4">
             <label for="" class="form-label">Image</label>
             <input type="file" class="form-control" 
             value="<?php echo $product->image?>" name="image" id="file"
              onchange="previewImage()">
+             <p class="form-message" style="font-size:10px; color:red;"></p>
             <div class="image"></div>
 
           </div>
-          <div class="mb-3">
+          <div class="mb-4">
             <label for="" class="form-label">Tags</label>
             <select multiple  class="form-control" name="tags[]">
               <?php foreach($tags as $tag): ?>
@@ -58,9 +63,10 @@
               <?php endforeach ?>
               
             </select>
+            <p class="form-message" style="font-size:10px; color:red;"></p>
           </div>
 
-          <div class="mb-3">
+          <div class="mb-4">
             <label for="" class="form-label">Categories</label>
             <select multiple  class="form-control" name="categories[]">
             <?php foreach($categories as $cat): ?>
@@ -74,11 +80,13 @@
               <?php endforeach ?>
               
             </select>
+            <p class="form-message" style="font-size:10px; color:red;"></p>
 
           </div>
-          <div class="mb-3">
+          <div class="mb-4">
             <label for="" class="form-label">Gallery</label>
             <input type="file" class="form-control" id="" name="gallery[]" multiple>
+            <p class="form-message" style="font-size:10px; color:red;"></p>
           </div>
         </div>
       </div>
@@ -94,6 +102,21 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
     crossorigin="anonymous"></script>
+    <script src="http://localhost/PHP_1/JavaScript/validator.js">
+    
+  </script>
+  <script> 
+
+  validator({
+      form: '#form_update_product',
+      rules:[
+        validator.isRequired("input[name=name_product]"),
+        validator.isRequired("input[name=date]"),
+        validator.isRequired("input[name=price]"),
+        validator.isRequired("input[name=sku]")
+        
+      ]
+    }) </script>
     
 </body>
 
