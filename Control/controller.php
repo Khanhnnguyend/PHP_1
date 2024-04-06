@@ -6,8 +6,10 @@ class ControlAction
         $tags = Tags::all();
         $categories = Categories::all();
 
-        $products = Product::all();
-
+        $productsTotal = Product::all();
+        $page = ceil(count($productsTotal)/5);
+        echo $page;
+        $products = Product::allLimit(5,0);
         foreach($products as $product){
             $arrNewTags = [];
             $arrNewCats= [];
@@ -44,6 +46,7 @@ class ControlAction
         $categories = Categories::all();
         $tags = Tags::all();
         include 'View/add_product.php';
+        
     }
 
     public function updateProductView()
@@ -56,8 +59,141 @@ class ControlAction
         include 'View/update_product.php';
     }
 
+    public function pageLoad()
+    {
+        $tags = Tags::all();
+        $categories = Categories::all();
+        $productsTotal = Product::all();
+
+        $page= ceil(count($productsTotal)/5);
+        $take = $_GET['page'];
+        $products = Product::allLimit(5,$take);
+        foreach($products as $product){
+            $arrNewTags = [];
+            $arrNewCats= [];
+            foreach(json_decode($product->tags) as $tag){
+                
+                $nameTag = Tags::findID($tag);
+                
+                if($nameTag){
+                    array_push($arrNewTags, $nameTag ->tag_name);
+                }
+            }
+
+            foreach(json_decode($product->categories) as $cat){
+                
+                $nameCat = Categories::findID($cat);
+                
+                if($nameCat){
+                    array_push($arrNewCats, $nameCat->cat_name);
+                }
+            }
+            $product->categories = $arrNewCats;
+            $product->tags = $arrNewTags;
+            
+        }
+
+
+        include 'View/product.php';
+    }
+
     public function page(){
-        echo "hahaha";
+   
+        $page = $_GET['page'];
+       
+        $products = Product::allLimit(5,$page);
+      
+
+        $tags = Tags::all();
+        $categories = Categories::all();
+
+    
+        foreach($products as $product){
+            $arrNewTags = [];
+            $arrNewCats= [];
+            foreach(json_decode($product->tags) as $tag){
+                
+                $nameTag = Tags::findID($tag);
+                
+                if($nameTag){
+                    array_push($arrNewTags, $nameTag ->tag_name);
+                }
+            }
+
+            foreach(json_decode($product->categories) as $cat){
+                
+                $nameCat = Categories::findID($cat);
+                
+                if($nameCat){
+                    array_push($arrNewCats, $nameCat->cat_name);
+                }
+            }
+            $product->categories = $arrNewCats;
+            $product->tags = $arrNewTags;
+            
+        }
+
+        foreach ($products as $product) {
+            echo "
+        <tr id='$product->id'>
+        <td scope='col'> $product->date </td>
+        <td scope='col'> $product->product_name </td>
+        <td scope='col'> $product->sku </td>
+        <td scope='col'> $product->price </td>
+        <td scope='col'>
+            <img style='max-width: 80px;' src=https://localhost/PHP_1/assets/upload/$product->image alt=' '>
+        </td>
+        <td scope='col'>";
+            foreach (json_decode($product->gallery) as $gal) {
+                echo "<img style='max-width: 40px;' src=https://localhost/PHP_1/assets/upload/$gal alt=' '>
+                                
+                           ";
+            }
+            echo " </td> <td scope='col'>";
+            foreach ($product->categories as $key => $cat) {
+
+                if ($key !== count($product->categories) - 1) {
+                    echo $cat . ", ";
+                } else {
+                    echo $cat;
+                };
+            }
+
+            echo "
+        </td>
+
+        <td scope='col'>";
+
+        foreach ($product->tags as $key => $tag) {
+
+            if ($key !== count($product->tags) - 1) {
+                echo $tag . ", ";
+            } else {
+                echo $tag;
+            };
+        }
+
+            echo "
+        </td>
+
+        <td style=''>
+        <a href='index.php?controller=update_product&product_id=";
+        
+        echo $product->id ."'style='color:black; margin-right:10px'>";
+
+         echo " <i id='' class='fa-solid fa-pencil update_icon'></i></a>
+        <i class='fa-solid fa-trash delete_icon'></i>
+        </td>
+
+
+
+
+    </tr>
+    ";
+    ;
+        }
+      
+       
     }
 
     public function addProperty(){
@@ -66,6 +202,9 @@ class ControlAction
 
     public function addProduct()
     {
+
+      
+        
         $name_product = $_POST['name_product'];
         $sku = $_POST['sku'];
         $price = $_POST['price'];
@@ -129,9 +268,13 @@ class ControlAction
 
         $product->gallery = json_encode($totalGal);
         $product->categories = json_encode($totalCat);
-
+        
         $product->insert();
-        header('location:index.php?controller=add_product');
+       
+        //header('location:http://localhost/PHP_1/index.php?controller=add_product');
+       
+       echo"<script> window.location.href ='http://localhost/PHP_1/index.php?controller=add_product'</script>";
+       
     }
 
     public function updateProduct()
@@ -183,7 +326,7 @@ class ControlAction
         foreach ($categories as $cat) {
             array_push($totalCat, $cat);
         }
-
+             $product->categories = json_encode($totalCat);
 
 
         $totalGal = [];
@@ -210,16 +353,19 @@ class ControlAction
         }
        
 
-        $product->categories = json_encode($totalCat);
+       
 
        
 
         $product->update();
-       header('location:index.php');
+        
+       //header('location:index.php');
+       echo"<script> window.location.href ='http://localhost/PHP_1/index.php'</script>";
     }
 
     public function search()
     {
+        $page = $_GET["page_search"];
         $findSymbol = $_GET['search'];
 
         $products = Product::findAny($findSymbol);
@@ -253,7 +399,11 @@ class ControlAction
             
         }
 
+        $start = ($page-1)*5;
+        $countLoop = 0;
         foreach ($products as $product) {
+           
+       if($countLoop >= $start && $countLoop < $page*5){
             echo "
         <tr id='$product->id'>
         <td scope='col'> $product->date </td>
@@ -297,7 +447,11 @@ class ControlAction
         </td>
 
         <td style=''>
-        <i class='fa-solid fa-pencil update_icon'></i>
+        <a href='index.php?controller=update_product&product_id=";
+        
+        echo $product->id ."'style='color:black; margin-right:10px'>";
+
+         echo " <i id='' class='fa-solid fa-pencil update_icon'></i></a>
         <i class='fa-solid fa-trash delete_icon'></i>
         </td>
 
@@ -305,13 +459,16 @@ class ControlAction
 
 
     </tr>
-    ";
+    ";}
+    $countLoop++;
+
         }
+        echo "<input id='total_search' type='' value='";echo count($products); echo "'>";
     }
 //filter
     public function filterSearch(){
        
-        
+        $page = $_GET['page_filter'];
         $sort = $_GET['sort'];
         $sortBy = $_GET['sort_by'];
         $category = $_GET['category'];
@@ -365,11 +522,12 @@ class ControlAction
             $product->tags = $arrNewTags;
             
         }
-
-        
-        echo "hahaha";
+        $start = ($page-1)*5;
+        $countLoop = 0;
         foreach ($products as $product) {
-            echo "
+           
+       if($countLoop >= $start && $countLoop < $page*5){
+        echo "
         <tr id='$product->id'>
         <td scope='col'> $product->date </td>
         <td scope='col'> $product->product_name </td>
@@ -412,17 +570,23 @@ class ControlAction
         </td>
 
         <td style=''>
-            <i class='fa-solid fa-pencil'></i>
-            <i class='fa-solid fa-trash'></i>
+        <a href='index.php?controller=update_product&product_id=";
+        
+        echo $product->id ."'style='color:black; margin-right:10px'>";
+
+         echo " <i id='' class='fa-solid fa-pencil update_icon'></i></a>
+        <i class='fa-solid fa-trash delete_icon'></i>
         </td>
-
-
-
-
     </tr>
+    
     ";
+       }
+       $countLoop++;
+    
         
     }
+    echo "<input id='total_filter' type='' value='";echo count($products); echo "'>";
+   
     }
 
     public function delete()
@@ -458,5 +622,9 @@ class ControlAction
         $cat->insert();
         
        header('location:index.php?controller=add_property');
+    } 
+
+    public function filterLoad(){
+
     }
 }

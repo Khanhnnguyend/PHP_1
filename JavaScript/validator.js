@@ -1,5 +1,6 @@
 
 function validator(options) {
+    let formValidate = document.querySelector(options.form)
     var selectorRules = {}
     function validate(inputElement, rule) {
         let errorElement = inputElement.parentElement.querySelector('.form-message')
@@ -22,15 +23,16 @@ function validator(options) {
 
             errorElement.innerText = errorMessage
 
-            inputElement.classList.add('invalid')
+            formValidate.classList.add('invalid')
         } else {
             errorElement.innerText = ''
-            inputElement.classList.remove('invalid')
+            formValidate.classList.remove('invalid')
         }
     }
-    let formValidate = document.querySelector(options.form)
+    
 
     if (formValidate) {
+        
         options.rules.forEach(rule => {
 
 
@@ -45,17 +47,18 @@ function validator(options) {
 
             if (inputElement) {
                 inputElement.onblur = function () {
+
                     validate(inputElement, rule)
 
 
                 }
 
                 inputElement.oninput = function () {
-
+                   
                     let errorElement = formValidate.parentElement.querySelector('.form-message')
 
                     errorElement.innerText = ''
-                    inputElement.classList.remove('invalid')
+                    formValidate.classList.remove('invalid')
                 }
             }
         });

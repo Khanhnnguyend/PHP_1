@@ -9,9 +9,9 @@
 
    
 
-    $controller = isset($_GET['controller']) == true ? $_GET['controller'] : "index.php";
+    $controller = isset($_GET['controller']) == true ? $_GET['controller'] : "index.php?page=1";
 	switch($controller){
-		case 'index.php':{
+		case 'index.php?page=1':{
    
             if(!isset($_GET['search'])
             && !isset($_GET['filter_search'])
@@ -58,7 +58,7 @@
 
     if(isset($_POST['add_tag']) ) {
         $controlAction->addTag();
-        echo "add tag";
+        
     }
 
     if(isset($_POST['add_cat']) ) {
@@ -66,17 +66,29 @@
         
     }
 
-    if(isset($_GET['filter_search']) ) {
+    if(isset($_GET['filter_search']) && isset($_GET['notload'])
+    ) {
         $controlAction->filterSearch();
         
     }
 
-    if(isset($_GET['page']) ) {
+    if(isset($_GET['page'])&& !isset($_GET['noneload']) ) {
+       
+        $controlAction->pageLoad();
         
+    }
+
+    if(isset($_GET['page']) && isset($_GET['noneload'])) {
+      
         $controlAction->page();
         
     }
 
+    if(isset($_GET['filter_search'])&& !isset($_GET['notload']) ) {
+       
+        header('location:index.php?page=1');
+        
+    }
 
     
 ?>

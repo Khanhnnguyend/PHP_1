@@ -17,12 +17,35 @@
         return $result;
     }
 
+    public static function allLimit($num,$page){
+        $model = new static();
+        
+        
+            $page = (int)$num* ((int)$page -1);
+       
+        
+        
+        $sql = "select * from $model->tableName limit $num offset $page";
+        $stmt = $model->connection->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_CLASS, get_class($model));
+        return $result;
+    }
+
+    public static function condition($sql){
+       
+        $stmt = $model->connection->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_CLASS, get_class($model));
+        return $result;
+    }
+
     public function insert(){ 
         
         $this->sql = "insert into $this->tableName (";
         foreach ($this->columns as $col) {
             if($this->{$col} ==null ){
-                //echo '<script> alert("aaa")</script>';
+                
                 continue;
             }
             $this->sql .= "$col, ";
@@ -48,6 +71,7 @@
            // $this->id = $this->connect->lastInsertId();
             return $this;
         }catch(Exception $ex){
+            
             var_dump($ex->getMessage());die;
         }
 
@@ -127,7 +151,7 @@
         }
 
         if($obj->category != null){
-            $model->sql .= " categories like '%$obj->category%' ". "and ";
+            $model->sql .= " categories like '%$obj->category%' ". "and";
         }
 
         if($obj->tagFind != null){
@@ -163,7 +187,7 @@
         $model->sql = substr($model->sql , 0, -strlen(strrchr($model->sql , ' ')));
 
         $model->sql .=" order by  $obj->sortBy " ."$obj->sort";
-        echo $model->sql;
+        
 
          $stmt = $model->connection->prepare($model->sql);
         $stmt->execute();

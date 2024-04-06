@@ -80,14 +80,14 @@
                     <div class="col">
 
                         <select class="form-select" id="tag_filter" name="tag">
-                        <option value="">Tag</option>
+                            <option value="">Tag</option>
                             <?php foreach ($tags as $tag_) : ?>
                                 <option value="<?php echo $tag_->id ?>"><?php echo $tag_->tag_name ?></option>
                             <?php endforeach ?>
 
                         </select>
 
-                              
+
                     </div>
                     <div class="col">
 
@@ -133,7 +133,7 @@
                 </thead>
                 <tbody>
 
-                    <?php foreach ($products as $product) : ?>
+                    <?php if ($products != null) foreach ($products as $product) : ?>
                         <tr id="<?php echo $product->id ?>">
                             <td scope="col"><?php echo $product->date ?></td>
                             <td scope="col"><?php echo $product->product_name ?></td>
@@ -172,10 +172,10 @@
                             </td>
 
                             <td style="">
-                                <a href="index.php?controller=update_product&product_id=<?php echo $product->id?>" style="color:black; margin-right:10px">
-                                <i id="" class="fa-solid fa-pencil update_icon"></i></a>
+                                <a href="index.php?controller=update_product&product_id=<?php echo $product->id ?>" style="color:black; margin-right:10px">
+                                    <i id="" class="fa-solid fa-pencil update_icon"></i></a>
                                 <i id="" class="fa-solid fa-trash delete_icon"></i>
-                                
+
                             </td>
 
 
@@ -197,9 +197,15 @@
                             <span aria-hidden="true">&laquo;</span>
                         </a>
                     </li>
-                    <li class="page-item"><a class="page-link page_1" href="">1</a></li>
-                    <li class="page-item"><a class="page-link" href="">2</a></li>
-                    <li class="page-item"><a class="page-link" href="">3</a></li>
+                    <?php for ($i = 1; $i <= $page; $i++) {
+
+                        echo '<li class="page-item"><a class="page-link page_';
+                        echo ((int)$i);
+                        echo ' page" href="">';
+                        echo ((int)$i);
+                        echo '</a></li>';
+                    } ?>
+
 
                     <li class="page-item">
                         <a class="page-link" href="#" aria-label="Next">
@@ -212,36 +218,63 @@
     </div>
 
     <script>
+        let countPage = 0
+        let pages = document.querySelectorAll('.page')
 
-document.querySelector('.page_1').addEventListener('click', function(event){
-        event.preventDefault(); 
-        var newState = { page: "index.php" };
-        var newTitle = "Page 1";
-        var newUrl = "/PHP_1/index.php?page=1";
 
-        history.pushState(newState, newTitle, newUrl);
 
-        document.title = newTitle;
-})
+        for (let i = 0; i < pages.length; i++) {
 
-function pagePag(){
-    
-                var xmlhttp = new XMLHttpRequest();
-
-                xmlhttp.open("GET", "index.php?page", true);
-                xmlhttp.send();
-                
-                xmlhttp.onreadystatechange = function() {
-                    if (this.readyState == 4 && this.status == 200) {
-                        console.log("chay")
-                        document.querySelector("tbody").innerHTML = this.responseText;
-                        deleBtn()
-                    }
+            pages[i].addEventListener('click', function(event) {
+                event.preventDefault();
+                var newState = {
+                    page: "index.php"
                 };
+                var newTitle = "Page 1";
 
-            
-}
-document.querySelector('.page_1').addEventListener('click',pagePag)
+                var newUrl = `/PHP_1/index.php?page=${i+1}`;
+                console.log(newUrl);
+                history.pushState(newState, newTitle, newUrl);
+                document.title = newTitle;
+
+                pagePag(i + 1)
+
+
+
+            })
+        }
+ 
+
+        // document.querySelector('.page_1').addEventListener('click', function(event){
+        //         event.preventDefault(); 
+        //         var newState = { page: "index.php" };
+        //         var newTitle = "Page 1";
+        //         var newUrl = "/PHP_1/index.php?page=1";
+
+        //         history.pushState(newState, newTitle, newUrl);
+
+        //         document.title = newTitle;
+        // })
+
+        function pagePag(page) {
+
+            var xmlhttp = new XMLHttpRequest();
+
+            xmlhttp.open("GET", `index.php?page=${page}&noneload`, true);
+            xmlhttp.send();
+
+            xmlhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+
+                    document.querySelector("tbody").innerHTML = this.responseText;
+
+                    deleBtn()
+                }
+            };
+
+
+        }
+        // document.querySelector('.page_1').addEventListener('click',pagePag)
 
         function deleBtn() {
             var deleteIcon = document.querySelectorAll('.delete_icon')
@@ -271,6 +304,16 @@ document.querySelector('.page_1').addEventListener('click',pagePag)
 
         function searchProduct() {
 
+            event.preventDefault();
+                var newState = {
+                    page: "index.php"
+                };
+                var newTitle = "Filter";
+
+                var newUrl = "/PHP_1/" +"index.php?search" + str+"&page_search=1"
+               
+                history.pushState(newState, newTitle, newUrl);
+                document.title = newTitle;
 
             let str = document.querySelector("#search_input").value.trim()
             if (str == "") {
@@ -279,13 +322,14 @@ document.querySelector('.page_1').addEventListener('click',pagePag)
             } else {
                 var xmlhttp = new XMLHttpRequest();
 
-                xmlhttp.open("GET", "index.php?search="+str, true);
+                xmlhttp.open("GET", "index.php?search=" + str+"&page_search=1", true);
                 xmlhttp.send();
 
                 xmlhttp.onreadystatechange = function() {
                     if (this.readyState == 4 && this.status == 200) {
 
                         document.querySelector("tbody").innerHTML = this.responseText;
+                       pageSearch()
                         deleBtn()
                     }
                 };
@@ -294,51 +338,261 @@ document.querySelector('.page_1').addEventListener('click',pagePag)
 
         }
 
-        function filterProduct() {
+        // function filterProduct() {
 
-                var sortby = document.querySelector('#sort_by')
-                var sort = document.querySelector('#sort')
-                var category_filter = document.querySelector('#category_filter')
-                var tag_filter = document.querySelector('#tag_filter')
-                var day_from = document.querySelector('#day_from')
-                var day_to = document.querySelector('#day_to')
-                var price_from = document.querySelector('#price_from')
-                var price_to = document.querySelector('#price_to')
+        //     var sortby = document.querySelector('#sort_by')
+        //     var sort = document.querySelector('#sort')
+        //     var category_filter = document.querySelector('#category_filter')
+        //     var tag_filter = document.querySelector('#tag_filter')
+        //     var day_from = document.querySelector('#day_from')
+        //     var day_to = document.querySelector('#day_to')
+        //     var price_from = document.querySelector('#price_from')
+        //     var price_to = document.querySelector('#price_to')
 
 
+
+
+
+        //     var xmlhttp = new XMLHttpRequest();
+
+        //     xmlhttp.open("GET", "index.php?" + "sort_by=" + sortby.value + "&sort=" + sort.value + "&category=" + category_filter.value + "&tag=" + tag_filter.value + "&day_from=" + day_from.value + "&day_to=" + day_to.value + "&price_from=" + price_from.value + "&price_to=" + price_to.value + "&filter_search=", true);
+        //     xmlhttp.send();
+
+        //     xmlhttp.onreadystatechange = function() {
+        //         if (this.readyState == 4 && this.status == 200) {
+
+        //             document.querySelector("tbody").innerHTML = this.responseText;
+                    
+        //             deleBtn()
+        //         }
+        //     };
+
+
+
+        // }
+
+
+            function pageSearch(){
+                let pageFilerBtn = document.querySelector('.pagination')
+      
+            let liPage = pageFilerBtn.querySelectorAll('li')
             
+            for(let i =0; i< liPage.length; i++){
+                pageFilerBtn.removeChild(liPage[i])
+                
+            }
+
+            let totalPage =document.querySelector('#total_search').value
+
+            totalPage =Math.ceil(totalPage / 5)
+           let totalLi =`<li class="page-item">
+                        <a class="page-link" href="#" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>` 
+
+                    for(let j = 1; j<= totalPage; j++){
+                        totalLi += `<li class="page-item"><a class="page-link page_search${j} page_search" href="">${j}</a></li>`
+                    }
+                    totalLi += `<li class="page-item">
+                        <a class="page-link" href="#" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>`
+                    pageFilerBtn.innerHTML= totalLi
+
+        
+        
+
+
+       
+            let pageBtnNew = document.querySelectorAll('.page_filter')
+       
+        var sortby = document.querySelector('#sort_by')
+            var sort = document.querySelector('#sort')
+            var category_filter = document.querySelector('#category_filter')
+            var tag_filter = document.querySelector('#tag_filter')
+            var day_from = document.querySelector('#day_from')
+            var day_to = document.querySelector('#day_to')
+            var price_from = document.querySelector('#price_from')
+            var price_to = document.querySelector('#price_to')
+      
+        
+        for(let i =0; i<pageBtnNew.length; i++){
+            pageBtnNew[i].addEventListener('click', function(event){
+
+
+            event.preventDefault();
+                var newState = {
+                    page: "index.php"
+                };
+                var newTitle = "Filter";
+
+                var newUrl = "/PHP_1/" +"index.php?"  + "&filter_search=" + "&page_filter="+(i+1)+ "&sort_by=" + sortby.value + "&sort=" + sort.value + "&category=" + category_filter.value + "&tag=" + tag_filter.value + "&day_from=" + day_from.value + "&day_to=" + day_to.value + "&price_from=" + price_from.value + "&price_to=" + price_to.value
+               
+                history.pushState(newState, newTitle, newUrl);
+                document.title = newTitle;
+
+
                 var xmlhttp = new XMLHttpRequest();
 
-                xmlhttp.open("GET", "index.php?"+"sort_by="+sortby.value+"&sort="+sort.value+"&category="+category_filter.value+ "&tag="+tag_filter.value+"&day_from="+day_from.value+"&day_to="+day_to.value+"&price_from="+price_from.value+"&price_to="+price_to.value+"&filter_search=", true);
-                xmlhttp.send();
+            xmlhttp.open("GET", "index.php?" + "sort_by=" + sortby.value + "&page_filter="+(i+1)+ "&sort=" + sort.value + "&category=" + category_filter.value + "&tag=" + tag_filter.value + "&day_from=" + day_from.value + "&day_to=" + day_to.value + "&price_from=" + price_from.value + "&price_to=" + price_to.value + "&filter_search="+"&notload", true);
+            xmlhttp.send();
 
-                xmlhttp.onreadystatechange = function() {
-                    if (this.readyState == 4 && this.status == 200) {
-                        
-                        document.querySelector("tbody").innerHTML = this.responseText;
+            xmlhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+
+                    document.querySelector("tbody").innerHTML = this.responseText;
+                    filterPage()
+                    deleBtn()
                     
-                        deleBtn()
-                    }
-                };
+                }
+            };
 
-            
 
+            })
         }
-
-
-
+            }
 
 
 
 
 
         deleBtn()
-        document.querySelector('#btn_filter').addEventListener('click', filterProduct)
-        document.querySelector('#button-addon2').addEventListener('click', searchProduct)
+
+
+        document.querySelector('#btn_filter').addEventListener('click', function (event) {
+
+            var sortby = document.querySelector('#sort_by')
+            var sort = document.querySelector('#sort')
+            var category_filter = document.querySelector('#category_filter')
+            var tag_filter = document.querySelector('#tag_filter')
+            var day_from = document.querySelector('#day_from')
+            var day_to = document.querySelector('#day_to')
+            var price_from = document.querySelector('#price_from')
+            var price_to = document.querySelector('#price_to')
+
+
+            event.preventDefault();
+                var newState = {
+                    page: "index.php"
+                };
+                var newTitle = "Filter";
+
+                var newUrl = "/PHP_1/" +"index.php?"  + "&filter_search=" + "&page_filter=1"+ "&sort_by=" + sortby.value + "&sort=" + sort.value + "&category=" + category_filter.value + "&tag=" + tag_filter.value + "&day_from=" + day_from.value + "&day_to=" + day_to.value + "&price_from=" + price_from.value + "&price_to=" + price_to.value
+               
+                history.pushState(newState, newTitle, newUrl);
+                document.title = newTitle;
+
+
+            var xmlhttp = new XMLHttpRequest();
+
+            xmlhttp.open("GET", "index.php?" + "sort_by=" + sortby.value + "&page_filter=1"+ "&sort=" + sort.value + "&category=" + category_filter.value + "&tag=" + tag_filter.value + "&day_from=" + day_from.value + "&day_to=" + day_to.value + "&price_from=" + price_from.value + "&price_to=" + price_to.value + "&filter_search="+"&notload", true);
+            xmlhttp.send();
+
+            xmlhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+
+                    document.querySelector("tbody").innerHTML = this.responseText;
+                    filterPage()
+                    deleBtn()
+                    
+                }
+            };
+
+
+
+        })
+       
+
+
+        function filterPage(){
+            let pageFilerBtn = document.querySelector('.pagination')
+      
+            let liPage = pageFilerBtn.querySelectorAll('li')
+            
+            for(let i =0; i< liPage.length; i++){
+                pageFilerBtn.removeChild(liPage[i])
+                
+            }
+
+            let totalPage =document.querySelector('#total_filter').value
+
+            totalPage =Math.ceil(totalPage / 5)
+           let totalLi =`<li class="page-item">
+                        <a class="page-link" href="#" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>` 
+
+                    for(let j = 1; j<= totalPage; j++){
+                        totalLi += `<li class="page-item"><a class="page-link page_filter${j} page_filter" href="">${j}</a></li>`
+                    }
+                    totalLi += `<li class="page-item">
+                        <a class="page-link" href="#" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>`
+                    pageFilerBtn.innerHTML= totalLi
+
+        
+        
+
+
+       
+            let pageBtnNew = document.querySelectorAll('.page_filter')
+       
+        var sortby = document.querySelector('#sort_by')
+            var sort = document.querySelector('#sort')
+            var category_filter = document.querySelector('#category_filter')
+            var tag_filter = document.querySelector('#tag_filter')
+            var day_from = document.querySelector('#day_from')
+            var day_to = document.querySelector('#day_to')
+            var price_from = document.querySelector('#price_from')
+            var price_to = document.querySelector('#price_to')
+      
+        
+        for(let i =0; i<pageBtnNew.length; i++){
+            pageBtnNew[i].addEventListener('click', function(event){
+
+
+            event.preventDefault();
+                var newState = {
+                    page: "index.php"
+                };
+                var newTitle = "Filter";
+
+                var newUrl = "/PHP_1/" +"index.php?"  + "&filter_search=" + "&page_filter="+(i+1)+ "&sort_by=" + sortby.value + "&sort=" + sort.value + "&category=" + category_filter.value + "&tag=" + tag_filter.value + "&day_from=" + day_from.value + "&day_to=" + day_to.value + "&price_from=" + price_from.value + "&price_to=" + price_to.value
+               
+                history.pushState(newState, newTitle, newUrl);
+                document.title = newTitle;
+
+
+                var xmlhttp = new XMLHttpRequest();
+
+            xmlhttp.open("GET", "index.php?" + "sort_by=" + sortby.value + "&page_filter="+(i+1)+ "&sort=" + sort.value + "&category=" + category_filter.value + "&tag=" + tag_filter.value + "&day_from=" + day_from.value + "&day_to=" + day_to.value + "&price_from=" + price_from.value + "&price_to=" + price_to.value + "&filter_search="+"&notload", true);
+            xmlhttp.send();
+
+            xmlhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+
+                    document.querySelector("tbody").innerHTML = this.responseText;
+                    filterPage()
+                    deleBtn()
+                    
+                }
+            };
+
+
+            })
+        }
+    }
+
+    document.querySelector('#button-addon2').addEventListener('click', searchProduct)
+
     </script>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" 
-    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     <script src="http://localhost/PHP_1/JavaScript/validator.js"></script>
     <script src="http://localhost/PHP_1/JavaScript/search.js"></script>
 </body>

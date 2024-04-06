@@ -55,7 +55,8 @@
             <label for="" class="form-label">Tags</label>
             <select multiple  class="form-control" name="tags[]">
               <?php foreach($tags as $tag): ?>
-              <option <?php foreach(json_decode($product->tags) as $id_tag){
+              <option 
+              <?php foreach(json_decode($product->tags) as $id_tag){
                 if($id_tag == $tag->id){
                     echo "selected";
                 }
@@ -76,7 +77,7 @@
                     echo "selected";
                 }
               } ?>
-              value ="<?php echo $cat->id ?>"> <?php echo $cat->cat_name ?></option>
+              value ="<?php echo $cat->id ?>"> <?php echo $cat->cat_name; ?></option>
               <?php endforeach ?>
               
             </select>
@@ -94,7 +95,7 @@
       <button type="submit" name="update_product" class="btn btn-primary btn-sm">Update</button>
   </form>
 
-  <a href="index.php"> <button type="button"class="btn btn-primary btn-sm">Product</button></a>
+  <a href="index.php?page=1"> <button type="button"class="btn btn-primary btn-sm">Product</button></a>
   
   <script src="../JavaScript/imgInput.js"></script>
   <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
