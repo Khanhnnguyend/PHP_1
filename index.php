@@ -9,9 +9,9 @@
 
    
 
-    $controller = isset($_GET['controller']) == true ? $_GET['controller'] : "index.php?page=1";
+    $controller = isset($_GET['controller']) == true ? $_GET['controller'] : "index.php";
 	switch($controller){
-		case 'index.php?page=1':{
+		case 'index.php':{
    
             if(!isset($_GET['search'])
             && !isset($_GET['filter_search'])
@@ -20,6 +20,7 @@
             }
 			break;
 		}
+
 
         case 'add_product':{
             $controlAction->addProductView();
@@ -90,5 +91,10 @@
         
     }
 
+    if(isset($_GET['search'])&& !isset($_GET['notloadpage']) ) {
+       
+        
+        
+    }
     
 ?>

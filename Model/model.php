@@ -23,8 +23,6 @@
         
             $page = (int)$num* ((int)$page -1);
        
-        
-        
         $sql = "select * from $model->tableName limit $num offset $page";
         $stmt = $model->connection->prepare($sql);
         $stmt->execute();
@@ -111,10 +109,10 @@
         
     }
 
-    public static function findAny($f){
+    public static function findName($f){
         $model = new static();
         $model->sql = "select * from $model->tableName where 
-        product_name LIKE '%$f%' or sku LIKE '%$f%' or categories LIKE '%$f%' or tags LIKE '%$f%' or date LIKE '%$f%' ";
+        product_name LIKE '%$f%'";
         $stmt = $model->connection->prepare($model->sql);
         $stmt->execute();
         $result = $stmt->fetchAll(PDO::FETCH_CLASS, get_class($model));

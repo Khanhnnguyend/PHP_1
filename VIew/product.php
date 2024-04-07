@@ -160,9 +160,8 @@
 
                             <td scope="col">
                                 <?php foreach ($product->tags as $key => $tag) {
-
                                     if ($key !== count($product->tags) - 1) {
-                                        echo $tag . ", ";
+                                        echo$tag . ", ";
                                     } else {
                                         echo $tag;
                                     };
@@ -303,19 +302,20 @@
         }
 
         function searchProduct() {
-
+            let str = document.querySelector("#search_input").value.trim()
+          
             event.preventDefault();
                 var newState = {
                     page: "index.php"
                 };
                 var newTitle = "Filter";
 
-                var newUrl = "/PHP_1/" +"index.php?search" + str+"&page_search=1"
+                var newUrl = "/PHP_1/" +"index.php?search=" + str+"&page_search=1"
                
                 history.pushState(newState, newTitle, newUrl);
                 document.title = newTitle;
 
-            let str = document.querySelector("#search_input").value.trim()
+            
             if (str == "") {
                 document.querySelector("tbody").innerHTML = "";
                 return;
@@ -373,13 +373,14 @@
 
 
             function pageSearch(){
-                let pageFilerBtn = document.querySelector('.pagination')
+                
+                let pageSearchBtn = document.querySelector('.pagination')
       
-            let liPage = pageFilerBtn.querySelectorAll('li')
+            let liPage = pageSearchBtn.querySelectorAll('li')
             
             for(let i =0; i< liPage.length; i++){
-                pageFilerBtn.removeChild(liPage[i])
-                
+                pageSearchBtn.removeChild(liPage[i])
+              
             }
 
             let totalPage =document.querySelector('#total_search').value
@@ -399,51 +400,44 @@
                             <span aria-hidden="true">&raquo;</span>
                         </a>
                     </li>`
-                    pageFilerBtn.innerHTML= totalLi
+                   pageSearchBtn.innerHTML= totalLi
 
         
         
 
 
        
-            let pageBtnNew = document.querySelectorAll('.page_filter')
+            let pageSearchBtnNew = document.querySelectorAll('.page_search')
        
-        var sortby = document.querySelector('#sort_by')
-            var sort = document.querySelector('#sort')
-            var category_filter = document.querySelector('#category_filter')
-            var tag_filter = document.querySelector('#tag_filter')
-            var day_from = document.querySelector('#day_from')
-            var day_to = document.querySelector('#day_to')
-            var price_from = document.querySelector('#price_from')
-            var price_to = document.querySelector('#price_to')
+            var sortby = document.querySelector('#search_input')
+            
       
         
-        for(let i =0; i<pageBtnNew.length; i++){
-            pageBtnNew[i].addEventListener('click', function(event){
-
+        for(let i =0; i<pageSearchBtnNew.length; i++){
+            pageSearchBtnNew[i].addEventListener('click', function(event){
+                let str = document.querySelector("#search_input").value.trim()
 
             event.preventDefault();
                 var newState = {
                     page: "index.php"
                 };
-                var newTitle = "Filter";
+                var newTitle = "Search";
 
-                var newUrl = "/PHP_1/" +"index.php?"  + "&filter_search=" + "&page_filter="+(i+1)+ "&sort_by=" + sortby.value + "&sort=" + sort.value + "&category=" + category_filter.value + "&tag=" + tag_filter.value + "&day_from=" + day_from.value + "&day_to=" + day_to.value + "&price_from=" + price_from.value + "&price_to=" + price_to.value
-               
+                var newUrl = "/PHP_1/" +"index.php?"  + "&search=" +str+ "&page_search="+(i+1)
                 history.pushState(newState, newTitle, newUrl);
                 document.title = newTitle;
 
 
                 var xmlhttp = new XMLHttpRequest();
 
-            xmlhttp.open("GET", "index.php?" + "sort_by=" + sortby.value + "&page_filter="+(i+1)+ "&sort=" + sort.value + "&category=" + category_filter.value + "&tag=" + tag_filter.value + "&day_from=" + day_from.value + "&day_to=" + day_to.value + "&price_from=" + price_from.value + "&price_to=" + price_to.value + "&filter_search="+"&notload", true);
-            xmlhttp.send();
+            xmlhttp.open("GET", "index.php?"  + "&search=" +str+ "&page_search="+(i+1)+"&notloadpage",true)   
+             xmlhttp.send();
 
             xmlhttp.onreadystatechange = function() {
                 if (this.readyState == 4 && this.status == 200) {
 
                     document.querySelector("tbody").innerHTML = this.responseText;
-                    filterPage()
+                    pageSearch()
                     deleBtn()
                     
                 }
@@ -460,7 +454,7 @@
 
         deleBtn()
 
-
+//filter ajax
         document.querySelector('#btn_filter').addEventListener('click', function (event) {
 
             var sortby = document.querySelector('#sort_by')
@@ -487,7 +481,10 @@
 
             var xmlhttp = new XMLHttpRequest();
 
-            xmlhttp.open("GET", "index.php?" + "sort_by=" + sortby.value + "&page_filter=1"+ "&sort=" + sort.value + "&category=" + category_filter.value + "&tag=" + tag_filter.value + "&day_from=" + day_from.value + "&day_to=" + day_to.value + "&price_from=" + price_from.value + "&price_to=" + price_to.value + "&filter_search="+"&notload", true);
+            xmlhttp.open("GET", "index.php?" + "sort_by=" + sortby.value 
+            + "&page_filter=1"+ "&sort=" + sort.value + "&category=" + category_filter.value + "&tag=" 
+            + tag_filter.value + "&day_from=" + day_from.value + "&day_to=" + day_to.value + "&price_from=" 
+            + price_from.value + "&price_to=" + price_to.value + "&filter_search="+"&notload", true);
             xmlhttp.send();
 
             xmlhttp.onreadystatechange = function() {
@@ -591,7 +588,7 @@
     document.querySelector('#button-addon2').addEventListener('click', searchProduct)
 
     </script>
-
+   
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     <script src="http://localhost/PHP_1/JavaScript/validator.js"></script>
     <script src="http://localhost/PHP_1/JavaScript/search.js"></script>

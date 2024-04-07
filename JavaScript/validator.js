@@ -23,10 +23,10 @@ function validator(options) {
 
             errorElement.innerText = errorMessage
 
-            formValidate.classList.add('invalid')
+            inputElement.classList.add('invalid')
         } else {
             errorElement.innerText = ''
-            formValidate.classList.remove('invalid')
+            inputElement.classList.remove('invalid')
         }
     }
     
@@ -58,7 +58,7 @@ function validator(options) {
                     let errorElement = formValidate.parentElement.querySelector('.form-message')
 
                     errorElement.innerText = ''
-                    formValidate.classList.remove('invalid')
+                    inputElement.classList.remove('invalid')
                 }
             }
         });

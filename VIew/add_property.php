@@ -16,38 +16,42 @@
       <form method="POST" id="add_tag_form">
         <div class="mb-4">
           <label for="" class="form-label">Tag</label>
-          <input type="text" class="form-control" id="" name="name_tag">
+          <input type="text" class="form-control invalid" id="" name="name_tag">
           <p class="form-message" style="font-size:10px; color:red;"></p>
         </div>
         <div class="mb-4">
           <label for="" class="form-label">Description</label>
-          <input type="text" class="form-control" id="" name="tag_description">
+          <input type="text" class="form-control invalid" id="" name="tag_description">
           <p class="form-message" style="font-size:10px; color:red;"></p>
         </div>
    
         <button type="submit" name="add_tag" class="btn btn-primary">Add tag</button>
       </form>
+      <p class="form_add_tag mt-2" style=" color:red;"></p>
+
     </div>
     <div class="col">
-      <form method="post">
+      <form method="post" id="add_cat_form">
         <div class="mb-4">
           <label for="name_cat" class="form-label">Categories</label>
-          <input type="text" class="form-control" id=""  name="name_cat">
+          <input type="text" class="form-control invalid" id=""  name="name_cat">
           <p class="form-message" style="font-size:10px; color:red;"></p>
         </div>
         <div class="mb-4">
           <label for="" class="form-label">Description</label>
-          <input type="text" class="form-control" id="" name="cat_description">
+          <input type="text" class="form-control invalid" id="" name="cat_description">
           <p class="form-message" style="font-size:10px; color:red;"></p>
         </div>
    
         <button type="submit" name="add_cat" class="btn btn-primary">Add cat</button>
       </form>
+      <p class="form_add_cat mt-2" style=" color:red;"></p>
+
     </div>
   </div>
 </div>
     
-<a href="index.php?page=1"> <button type="button" class="btn btn-primary btn-sm">Product</button></a>
+<a href="index.php?page=1"> <button type="button" class="btn btn-primary btn-sm mt-5">Back to product</button></a>
     
 
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
@@ -62,10 +66,24 @@
 
       ]
     })
+
+    validator({
+      form: '#add_cat_form',
+      rules: [
+        validator.isRequired("input[name=name_cat]"),
+        validator.isRequired("input[name=cat_description]")
+
+      ]
+    })
   </script>
 
+<script src="http://localhost/PHP_1/JavaScript/addProperty.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
     crossorigin="anonymous"></script>
+ 
 </body>
 </html>
+
+
+<!-- throw header vi js viet trong script -->
