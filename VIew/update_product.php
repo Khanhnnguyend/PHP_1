@@ -58,7 +58,7 @@
             <div class="image"></div>
 
           </div>
-          <div class="mb-4">
+          <div class="mb-4 tag-select">
             <label for="" class="form-label">Tags</label>
             <select multiple name="tags[]" class="form-select" id="multiple-select-field-tag" data-placeholder="Tags">
 
@@ -76,7 +76,7 @@
             <p class="form-message" style="font-size:10px; color:red;"></p>
           </div>
 
-          <div class="mb-4">
+          <div class="mb-4 cat-select">
             <label for="" class="form-label">Categories</label>
             <select class="form-control" name="categories[]" id="multiple-select-field-cat" data-placeholder="category"
               multiple>
@@ -94,7 +94,7 @@
             <p class="form-message" style="font-size:10px; color:red;"></p>
 
           </div>
-          <div class="mb-4">
+          <div class="mb-4 border rounded">
             <label for="" class="form-label">Gallery</label>
             <div class="upload__box">
               <div class="upload__btn-box">
@@ -141,11 +141,54 @@
       form: '#form_update_product',
       rules: [
         validator.isRequired("input[name=name_product]"),
+        validator.onlyText("input[name=name_product]"),
         validator.isRequired("input[name=price]"),
-        validator.isRequired("input[name=sku]")
+        validator.isRequired("input[name=sku]"),
+        validator.onlyText("input[name=sku]"),
 
       ]
-    }) </script>
+    }) 
+    
+    let tagBlock  =document.querySelector('.tag-select')
+    let selectTag =document.querySelector('#multiple-select-field-tag')
+    let spanSelect =tagBlock.querySelector('input')
+    let messageTag=tagBlock.querySelector('.form-message')
+console.log(tagBlock)
+console.log(spanSelect)
+    spanSelect.addEventListener("blur", function(){
+      
+      let tagSelect =tagBlock.querySelector('.select2-selection__choice')
+      if(tagSelect){
+        messageTag.innerText = ""
+        selectTag.classList.remove('invalid')
+      }
+      else 
+      {
+        messageTag.innerText = "Vui lòng chọn Tags"
+        selectTag.classList.add('invalid')
+      }
+    })
+
+
+    let catBlock  =document.querySelector('.cat-select')
+    let selectCat =document.querySelector('#multiple-select-field-cat')
+    let spanCatSelect =catBlock.querySelector('input')
+    let messageCat=catBlock.querySelector('.form-message')
+
+    spanCatSelect.addEventListener("blur", function(){
+      
+      let catSelect =catBlock.querySelector('.select2-selection__choice')
+      if(catSelect){
+        messageCat.innerText = ""
+        selectCat.classList.remove('invalid')
+      }
+      else 
+      {
+        messageCat.innerText = "Vui lòng chọn Categories"
+        selectCat.classList.add('invalid')
+      }
+    })
+    </script>
 
 
 

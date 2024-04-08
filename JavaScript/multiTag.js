@@ -12,7 +12,7 @@ $( '#multiple-select-field-cat' ).select2( {
   closeOnSelect: false,
 } );
 
-console.log("uuuuu")
+
 
 jQuery(document).ready(function () {
   ImgUpload();

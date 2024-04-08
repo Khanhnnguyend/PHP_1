@@ -57,9 +57,9 @@
             <div class="image"></div>
 
           </div>
-          <div class="mb-4">
+          <div class="mb-4 tag-select">
             <label for="" class="form-label">Tags</label>
-            <select multiple name="tags[]" class="form-select" id="multiple-select-field-tag" data-placeholder="Tags">
+            <select multiple name="tags[]" class="form-select invalid" id="multiple-select-field-tag" data-placeholder="Tags">
               <?php foreach ($tags as $tag): ?>
                 <option value="<?php echo $tag->id ?>">
                   <?php echo $tag->tag_name ?>
@@ -72,9 +72,9 @@
 
 
 
-          <div class="mb-4">
+          <div class="mb-4 cat-select">
             <label for="" class="form-label">Categories</label>
-            <select class="form-control" name="categories[]" id="multiple-select-field-cat" data-placeholder="category"
+            <select class="form-control invalid" name="categories[]" id="multiple-select-field-cat" data-placeholder="category"
               multiple>
               <?php foreach ($categories as $cat): ?>
                 <option value="<?php echo $cat->id ?>">
@@ -87,7 +87,7 @@
             <p class="form-message" style="font-size:10px; color:red;"></p>
 
           </div>
-          <div class="mb-4">
+          <div class="mb-4 border rounded">
             <label for="" class="form-label">Gallery</label>
             <div class="upload__box">
               <div class="upload__btn-box">
@@ -112,19 +112,8 @@
 
 
 
-  <script src="http://localhost/PHP_1/JavaScript/validator.js"></script>
 
-  <script>
-    validator({
-      form: '#form_add_product',
-      rules: [
-        validator.isRequired("input[name=name_product]"),
-        validator.isRequired("input[name=price]"),
-        validator.isRequired("input[name=sku]")
-
-      ]
-    })
-  </script>
+  
   <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
     crossorigin="anonymous"></script>
 
@@ -140,7 +129,26 @@
   </script>
   <link rel="stylesheet" href="http://localhost/PHP_1/CSS/fileUpload.css">
   <script src="http://localhost/PHP_1/JavaScript/addProduct.js"></script>
- 
+  <script src="http://localhost/PHP_1/JavaScript/validator.js"></script>
+
+  <script>
+    validator({
+      form: '#form_add_product',
+      rules: [
+        validator.isRequired("input[name=name_product]"),
+        validator.onlyText("input[name=name_product]"),
+        validator.isRequired("input[name=price]"),
+        validator.isRequired("input[name=sku]"),
+        validator.onlyText("input[name=sku]"),
+       
+
+      ]
+    })
+   
+    
+   
+   
+  </script>
 </body>
 
 </html>

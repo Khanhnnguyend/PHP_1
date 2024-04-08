@@ -62,7 +62,10 @@
       form: '#add_tag_form',
       rules: [
         validator.isRequired("input[name=name_tag]"),
-        validator.isRequired("input[name=tag_description]")
+        validator.onlyText("input[name=name_tag]"),
+        validator.isRequired("input[name=tag_description]"),
+        validator.onlyText("input[name=tag_description]"),
+
 
       ]
     })
@@ -71,7 +74,10 @@
       form: '#add_cat_form',
       rules: [
         validator.isRequired("input[name=name_cat]"),
-        validator.isRequired("input[name=cat_description]")
+        validator.onlyText("input[name=name_cat]"),
+        validator.isRequired("input[name=cat_description]"),
+        validator.onlyText("input[name=cat_description]"),
+
 
       ]
     })

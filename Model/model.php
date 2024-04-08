@@ -19,9 +19,7 @@
 
     public static function allLimit($num,$page){
         $model = new static();
-        
-        
-            $page = (int)$num* ((int)$page -1);
+        $page = (int)$num* ((int)$page -1);
        
         $sql = "select * from $model->tableName limit $num offset $page";
         $stmt = $model->connection->prepare($sql);
@@ -31,7 +29,7 @@
     }
 
     public static function condition($sql){
-       
+        $model = new static();
         $stmt = $model->connection->prepare($sql);
         $stmt->execute();
         $result = $stmt->fetchAll(PDO::FETCH_CLASS, get_class($model));
@@ -106,7 +104,7 @@
         where id= $id";
         $stmt = $model->connection->prepare($model->sql);
         $stmt->execute();
-        
+        echo "da xoa";
     }
 
     public static function findName($f){

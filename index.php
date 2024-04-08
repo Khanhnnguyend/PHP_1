@@ -49,13 +49,14 @@
 
     if(isset($_GET['search']) ) {
         $controlAction->search();
-        
+       
     }
 
     if(isset($_GET['delete']) ) {
+        
         $controlAction->delete();
         
-    }
+        }
 
     if(isset($_POST['add_tag']) ) {
         $controlAction->addTag();
@@ -70,7 +71,7 @@
     if(isset($_GET['filter_search']) && isset($_GET['notload'])
     ) {
         $controlAction->filterSearch();
-        
+       
     }
 
     if(isset($_GET['page'])&& !isset($_GET['noneload']) ) {

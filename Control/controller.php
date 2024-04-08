@@ -7,32 +7,32 @@ class ControlAction
         $categories = Categories::all();
 
         $productsTotal = Product::all();
-        $page = ceil(count($productsTotal)/5);
-        echo $page;
-        $products = Product::allLimit(5,0);
-        foreach($products as $product){
+        $page = ceil(count($productsTotal) / 5);
+
+        $products = Product::allLimit(5, 1);
+        foreach ($products as $product) {
             $arrNewTags = [];
-            $arrNewCats= [];
-            foreach(json_decode($product->tags) as $tag){
-                
+            $arrNewCats = [];
+            foreach (json_decode($product->tags) as $tag) {
+
                 $nameTag = Tags::findID($tag);
-                
-                if($nameTag){
-                    array_push($arrNewTags, $nameTag ->tag_name);
+
+                if ($nameTag) {
+                    array_push($arrNewTags, $nameTag->tag_name);
                 }
             }
 
-            foreach(json_decode($product->categories) as $cat){
-                
+            foreach (json_decode($product->categories) as $cat) {
+
                 $nameCat = Categories::findID($cat);
-                
-                if($nameCat){
+
+                if ($nameCat) {
                     array_push($arrNewCats, $nameCat->cat_name);
                 }
             }
             $product->categories = $arrNewCats;
             $product->tags = $arrNewTags;
-            
+
         }
 
 
@@ -45,13 +45,14 @@ class ControlAction
     {
         $categories = Categories::all();
         $tags = Tags::all();
+
         include 'View/add_product.php';
-        
+
     }
 
     public function updateProductView()
     {
-        $id= $_GET['product_id'];
+        $id = $_GET['product_id'];
         $categories = Categories::all();
         $tags = Tags::all();
         $product = Product::findID($id);
@@ -65,74 +66,74 @@ class ControlAction
         $categories = Categories::all();
         $productsTotal = Product::all();
 
-        $page= ceil(count($productsTotal)/5);
+        $page = ceil(count($productsTotal) / 5);
         $take = $_GET['page'];
-        $products = Product::allLimit(5,$take);
-        foreach($products as $product){
+        $products = Product::allLimit(5, $take);
+        foreach ($products as $product) {
             $arrNewTags = [];
-            $arrNewCats= [];
-            foreach(json_decode($product->tags) as $tag){
-                
+            $arrNewCats = [];
+            foreach (json_decode($product->tags) as $tag) {
+
                 $nameTag = Tags::findID($tag);
-                
-                if($nameTag){
-                    array_push($arrNewTags, $nameTag ->tag_name);
-                    
+
+                if ($nameTag) {
+                    array_push($arrNewTags, $nameTag->tag_name);
+
                 }
-                
+
             }
-         
-            foreach(json_decode($product->categories) as $cat){
-                
+
+            foreach (json_decode($product->categories) as $cat) {
+
                 $nameCat = Categories::findID($cat);
-                
-                if($nameCat){
+
+                if ($nameCat) {
                     array_push($arrNewCats, $nameCat->cat_name);
                 }
             }
             $product->categories = $arrNewCats;
             $product->tags = $arrNewTags;
-            
+
         }
 
 
         include 'View/product.php';
     }
 
-    public function page(){
-   
+    public function page()
+    {
+
         $page = $_GET['page'];
-       
-        $products = Product::allLimit(5,$page);
-      
 
-        $tags = Tags::all();
-        $categories = Categories::all();
+        $products = Product::allLimit(5, $page);
 
-    
-        foreach($products as $product){
+
+
+
+
+        foreach ($products as $product) {
             $arrNewTags = [];
-            $arrNewCats= [];
-            foreach(json_decode($product->tags) as $tag){
-            
+            $arrNewCats = [];
+            foreach (json_decode($product->tags) as $tag) {
+
                 $nameTag = Tags::findID($tag);
-                
-                if($nameTag){
-                    array_push($arrNewTags, $nameTag ->tag_name);
+
+                if ($nameTag) {
+                    array_push($arrNewTags, $nameTag->tag_name);
                 }
             }
 
-            foreach(json_decode($product->categories) as $cat){
-                
+            foreach (json_decode($product->categories) as $cat) {
+
                 $nameCat = Categories::findID($cat);
-                
-                if($nameCat){
+
+                if ($nameCat) {
                     array_push($arrNewCats, $nameCat->cat_name);
                 }
             }
             $product->categories = $arrNewCats;
             $product->tags = $arrNewTags;
-            
+
         }
 
         foreach ($products as $product) {
@@ -158,26 +159,28 @@ class ControlAction
                     echo $cat . ",";
                 } else {
                     echo $cat;
-                };
+                }
+                ;
             }
 
             echo "
         </td>
 
         <td scope='col'>";
-        foreach ($product->tags as $key => $tag) {
-            if ($key !== count($product->tags) - 1) {
-                echo $tag . ", ";
-            } else {
-                echo $tag;
-            };
-        }
+            foreach ($product->tags as $key => $tag) {
+                if ($key !== count($product->tags) - 1) {
+                    echo $tag . ", ";
+                } else {
+                    echo $tag;
+                }
+                ;
+            }
 
             echo " </td>
         <td style=''>
         <a href='index.php?controller=update_product&product_id=";
-        echo $product->id ."'style='color:black; margin-right:10px'>";
-         echo " <i id='' class='fa-solid fa-pencil update_icon'></i></a>
+            echo $product->id . "'style='color:black; margin-right:10px'>";
+            echo " <i id='' class='fa-solid fa-pencil update_icon'></i></a>
         <i class='fa-solid fa-trash delete_icon'></i>
         </td>
 
@@ -186,21 +189,22 @@ class ControlAction
 
     </tr>
     ";
-    ;
+            ;
         }
-      
-       
+
+
     }
 
-    public function addProperty(){
+    public function addProperty()
+    {
         include 'View/add_property.php';
     }
 
     public function addProduct()
     {
 
-      
-        
+
+
         $name_product = $_POST['name_product'];
         $sku = $_POST['sku'];
         $price = $_POST['price'];
@@ -219,24 +223,23 @@ class ControlAction
         $product->sku = $sku;
         $product->price = $price;
 
-        if($date==""){
-            $product->date =date("Y-m-d");
+        if ($date == "") {
+            $product->date = date("Y-m-d");
+        } else {
+            $product->date = $date;
         }
-        else{
-           $product->date = $date; 
-        }
-        
+
         $product->id = null;
 
         $filePic = "";
 
         if ($img['size'] > 0) {
-            $filePic =$img['name'];
-            $product->image =$filePic;
-            $filePic ="assets/upload/".$img['name'];
+            $filePic = $img['name'];
+            $product->image = $filePic;
+            $filePic = "assets/upload/" . $img['name'];
             move_uploaded_file($img['tmp_name'], $filePic);
         }
-        
+
 
         $totalTag = [];
         foreach ($tags as $tag) {
@@ -251,17 +254,17 @@ class ControlAction
         foreach ($categories as $cat) {
             array_push($totalCat, $cat);
         }
-
+        $product->categories = json_encode($totalCat);
 
 
         $totalGal = [];
 
         $galleries = array_map(function ($gallery1, $gallery2) {
             $filePic = "";
-            $filePic = "assets/upload/".$gallery1;
+            $filePic = "assets/upload/" . $gallery1;
             move_uploaded_file($gallery2, $filePic);
 
-            
+
             return $gallery1;
         }, $gallery['name'], $gallery['tmp_name']);
 
@@ -270,19 +273,20 @@ class ControlAction
         }
 
         $product->gallery = json_encode($totalGal);
-        $product->categories = json_encode($totalCat);
-        
+
+
         $product->insert();
-       
-        header('location:http://localhost/PHP_1/index.php?controller=add_product');
-       
-       //echo"<script> window.location.href ='http://localhost/PHP_1/index.php?controller=add_product'</script>";
-       
+
+        //header('location:http://localhost/PHP_1/index.php?controller=add_product');
+
+
+        echo "<script> window.location.href ='http://localhost/PHP_1/index.php?controller=add_product'</script>";
+
     }
 
     public function updateProduct()
     {
-       
+
         $name_product = $_POST['name_product'];
         $sku = $_POST['sku'];
         $price = $_POST['price'];
@@ -302,20 +306,20 @@ class ControlAction
         $product->sku = $sku;
         $product->price = $price;
         $product->date = $date;
-        $product->id = $_GET['product_id'];;
+        $product->id = $_GET['product_id'];
+        ;
 
         $filePic = "";
 
         if ($img['size'] > 0) {
             $filePic = $img['name'];
             $product->image = $filePic;
-            $filePic ="assets/upload/". $img['name'];
+            $filePic = "assets/upload/" . $img['name'];
             move_uploaded_file($img['tmp_name'], $filePic);
+        } else {
+            $product->image = null;
         }
-        else{
-            $product->image=null;
-        }
-        
+
 
         $totalTag = [];
         foreach ($tags as $tag) {
@@ -330,42 +334,40 @@ class ControlAction
         foreach ($categories as $cat) {
             array_push($totalCat, $cat);
         }
-             $product->categories = json_encode($totalCat);
+        $product->categories = json_encode($totalCat);
 
 
         $totalGal = [];
 
         $galleries = array_map(function ($gallery1, $gallery2) {
             $filePic = "";
-            $filePic = "assets/upload/".$gallery1;
+            $filePic = "assets/upload/" . $gallery1;
             move_uploaded_file($gallery2, $filePic);
 
-            
+
             return $gallery1;
         }, $gallery['name'], $gallery['tmp_name']);
 
-        
+
 
         foreach ($galleries as $gal) {
             array_push($totalGal, $gal);
         }
 
-        
-        
-        
-       
-        if(count($galleries)==1 & $galleries[0]==""){
-            if(!isset($_POST['gallery_old'])){
+
+
+
+
+        if (count($galleries) == 1 & $galleries[0] == "") {
+            if (!isset($_POST['gallery_old'])) {
                 $product->gallery = null;
-            }
-            else 
-            {
+            } else {
                 $totalGal = [];
             }
-            
+
         }
 
-        if(isset($_POST['gallery_old'])){
+        if (isset($_POST['gallery_old'])) {
             foreach ($gallery_old as $gal_old) {
                 array_push($totalGal, $gal_old);
             }
@@ -373,14 +375,14 @@ class ControlAction
 
         $product->gallery = json_encode($totalGal);
 
-       
 
-       
+
+
 
         $product->update();
-        
-       //header('location:index.php?page=1');
-       echo"<script> window.location.href ='http://localhost/PHP_1/index.php?page=1'</script>";
+
+        //header('location:index.php?page=1');
+        echo "<script> window.location.href ='http://localhost/PHP_1/index.php?page=1'</script>";
     }
 
     public function search()
@@ -393,38 +395,38 @@ class ControlAction
         $tags = Tags::all();
         $categories = Categories::all();
 
-    
-        foreach($products as $product){
+
+        foreach ($products as $product) {
             $arrNewTags = [];
-            $arrNewCats= [];
-            foreach(json_decode($product->tags) as $tag){
-                
+            $arrNewCats = [];
+            foreach (json_decode($product->tags) as $tag) {
+
                 $nameTag = Tags::findID($tag);
-                
-                if($nameTag){
-                    array_push($arrNewTags, $nameTag ->tag_name);
+
+                if ($nameTag) {
+                    array_push($arrNewTags, $nameTag->tag_name);
                 }
             }
 
-            foreach(json_decode($product->categories) as $cat){
-                
+            foreach (json_decode($product->categories) as $cat) {
+
                 $nameCat = Categories::findID($cat);
-                
-                if($nameCat){
+
+                if ($nameCat) {
                     array_push($arrNewCats, $nameCat->cat_name);
                 }
             }
             $product->categories = $arrNewCats;
             $product->tags = $arrNewTags;
-            
+
         }
 
-        $start = ($page-1)*5;
+        $start = ($page - 1) * 5;
         $countLoop = 0;
         foreach ($products as $product) {
-           
-       if($countLoop >= $start && $countLoop < $page*5){
-            echo "
+
+            if ($countLoop >= $start && $countLoop < $page * 5) {
+                echo "
         <tr id='$product->id'>
         <td scope='col'> $product->date </td>
         <td scope='col'> $product->product_name </td>
@@ -434,44 +436,46 @@ class ControlAction
             <img style='max-width: 80px;' src=https://localhost/PHP_1/assets/upload/$product->image alt=' '>
         </td>
         <td scope='col'>";
-            foreach (json_decode($product->gallery) as $gal) {
-                echo "<img style='max-width: 40px;' src=https://localhost/PHP_1/assets/upload/$gal alt=' '>
+                foreach (json_decode($product->gallery) as $gal) {
+                    echo "<img style='max-width: 40px;' src=https://localhost/PHP_1/assets/upload/$gal alt=' '>
                                 
                            ";
-            }
-            echo " </td> <td scope='col'>";
-            foreach ($product->categories as $key => $cat) {
+                }
+                echo " </td> <td scope='col'>";
+                foreach ($product->categories as $key => $cat) {
 
-                if ($key !== count($product->categories) - 1) {
-                    echo $cat . ", ";
-                } else {
-                    echo $cat;
-                };
-            }
+                    if ($key !== count($product->categories) - 1) {
+                        echo $cat . ", ";
+                    } else {
+                        echo $cat;
+                    }
+                    ;
+                }
 
-            echo "
+                echo "
         </td>
 
         <td scope='col'>";
 
-        foreach ($product->tags as $key => $tag) {
+                foreach ($product->tags as $key => $tag) {
 
-            if ($key !== count($product->tags) - 1) {
-                echo $tag . ", ";
-            } else {
-                echo $tag;
-            };
-        }
+                    if ($key !== count($product->tags) - 1) {
+                        echo $tag . ", ";
+                    } else {
+                        echo $tag;
+                    }
+                    ;
+                }
 
-            echo "
+                echo "
         </td>
 
         <td style=''>
         <a href='index.php?controller=update_product&product_id=";
-        
-        echo $product->id ."'style='color:black; margin-right:10px'>";
 
-         echo " <i id='' class='fa-solid fa-pencil update_icon'></i></a>
+                echo $product->id . "'style='color:black; margin-right:10px'>";
+
+                echo " <i id='' class='fa-solid fa-pencil update_icon'></i></a>
         <i class='fa-solid fa-trash delete_icon'></i>
         </td>
 
@@ -479,15 +483,19 @@ class ControlAction
 
 
     </tr>
-    ";}
-    $countLoop++;
+    ";
+            }
+            $countLoop++;
 
         }
-        echo "<input id='total_search' type='hidden' value='";echo count($products); echo "'>";
+        echo "<input id='total_search' type='hidden' value='";
+        echo count($products);
+        echo "'>";
     }
-//filter
-    public function filterSearch(){
-       
+    //filter
+    public function filterSearch()
+    {
+
         $page = $_GET['page_filter'];
         $sort = $_GET['sort'];
         $sortBy = $_GET['sort_by'];
@@ -497,57 +505,57 @@ class ControlAction
         $day_to = $_GET['day_to'];
         $price_from = $_GET['price_from'];
         $price_to = $_GET['price_to'];
-        
-        $filterArr =[
-            'sort'=> $sort,
-            'sortBy'=> $sortBy,
-            'category'=> $category,
-            'tagFind'=> $tagFind,
-            'day_from'=> $day_from,
-            'day_to'=> $day_to,
-            'price_from'=> $price_from,
-            'price_to'=> $price_to
+
+        $filterArr = [
+            'sort' => $sort,
+            'sortBy' => $sortBy,
+            'category' => $category,
+            'tagFind' => $tagFind,
+            'day_from' => $day_from,
+            'day_to' => $day_to,
+            'price_from' => $price_from,
+            'price_to' => $price_to
         ];
 
-        $filterjson = json_encode( $filterArr );
-        
+        $filterjson = json_encode($filterArr);
+
 
         $products = Product::filter($filterjson);
-        
+
         $tags = Tags::all();
         $categories = Categories::all();
 
-    
-        foreach($products as $product){
+
+        foreach ($products as $product) {
             $arrNewTags = [];
-            $arrNewCats= [];
-            foreach(json_decode($product->tags) as $tag){
-                
+            $arrNewCats = [];
+            foreach (json_decode($product->tags) as $tag) {
+
                 $nameTag = Tags::findID($tag);
-                
-                if($nameTag){
-                    array_push($arrNewTags, $nameTag ->tag_name);
+
+                if ($nameTag) {
+                    array_push($arrNewTags, $nameTag->tag_name);
                 }
             }
 
-            foreach(json_decode($product->categories) as $cat){
-                
+            foreach (json_decode($product->categories) as $cat) {
+
                 $nameCat = Categories::findID($cat);
-                
-                if($nameCat){
+
+                if ($nameCat) {
                     array_push($arrNewCats, $nameCat->cat_name);
                 }
             }
             $product->categories = $arrNewCats;
             $product->tags = $arrNewTags;
-            
+
         }
-        $start = ($page-1)*5;
+        $start = ($page - 1) * 5;
         $countLoop = 0;
         foreach ($products as $product) {
-           
-       if($countLoop >= $start && $countLoop < $page*5){
-        echo "
+
+            if ($countLoop >= $start && $countLoop < $page * 5) {
+                echo "
         <tr id='$product->id'>
         <td scope='col'> $product->date </td>
         <td scope='col'> $product->product_name </td>
@@ -557,65 +565,71 @@ class ControlAction
             <img style='max-width: 80px;' src=https://localhost/PHP_1/assets/upload/$product->image alt=' '>
         </td>
         <td scope='col'>";
-            foreach (json_decode($product->gallery) as $gal) {
-                echo "<img style='max-width: 40px;' src=https://localhost/PHP_1/assets/upload/$gal alt=' '>
+                foreach (json_decode($product->gallery) as $gal) {
+                    echo "<img style='max-width: 40px;' src=https://localhost/PHP_1/assets/upload/$gal alt=' '>
                                 
                            ";
-            }
-            echo " </td> <td scope='col'>";
-            foreach ($product->categories as $key => $cat) {
+                }
+                echo " </td> <td scope='col'>";
+                foreach ($product->categories as $key => $cat) {
 
-                if ($key !== count($product->categories) - 1) {
-                    echo $cat . ", ";
-                } else {
-                    echo $cat;
-                };
-            }
+                    if ($key !== count($product->categories) - 1) {
+                        echo $cat . ", ";
+                    } else {
+                        echo $cat;
+                    }
+                    ;
+                }
 
-            echo "
+                echo "
         </td>
 
         <td scope='col'>";
 
-        foreach ($product->tags as $key => $tag) {
+                foreach ($product->tags as $key => $tag) {
 
-            if ($key !== count($product->tags) - 1) {
-                echo $tag . ", ";
-            } else {
-                echo $tag;
-            };
-        }
+                    if ($key !== count($product->tags) - 1) {
+                        echo $tag . ", ";
+                    } else {
+                        echo $tag;
+                    }
+                    ;
+                }
 
-            echo "
+                echo "
         </td>
 
         <td style=''>
         <a href='index.php?controller=update_product&product_id=";
-        
-        echo $product->id ."'style='color:black; margin-right:10px'>";
 
-         echo " <i id='' class='fa-solid fa-pencil update_icon'></i></a>
+                echo $product->id . "'style='color:black; margin-right:10px'>";
+
+                echo " <i id='' class='fa-solid fa-pencil update_icon'></i></a>
         <i class='fa-solid fa-trash delete_icon'></i>
         </td>
     </tr>
     
     ";
-       }
-       $countLoop++;
-    
-        
-    }
-    echo "<input id='total_filter' type='hidden' value='";echo count($products); echo "'>";
-   
+            }
+            $countLoop++;
+
+
+        }
+        echo "<input id='total_filter' type='hidden' value='";
+        echo count($products);
+        echo "'>";
+
     }
 
     public function delete()
     {
         $id = $_GET['delete'];
+
         Product::delete($id);
     }
 
-    public function addTag(){
+    public function addTag()
+    {
         $name_tag = $_POST['name_tag'];
         $des_tag = $_POST['tag_description'];
 
@@ -625,12 +639,13 @@ class ControlAction
         $tag->description = $des_tag;
         $tag->id = null;
         $tag->insert();
-       
-       header('location:index.php?controller=add_property');
+
+        header('location:index.php?controller=add_property');
 
     }
 
-    public function addCat(){
+    public function addCat()
+    {
         $name_cat = $_POST['name_cat'];
         $des_cat = $_POST['cat_description'];
 
@@ -640,11 +655,12 @@ class ControlAction
         $cat->description = $des_cat;
         $cat->id = null;
         $cat->insert();
-        
-       header('location:index.php?controller=add_property');
-    } 
 
-    public function filterLoad(){
+        header('location:index.php?controller=add_property');
+    }
+
+    public function filterLoad()
+    {
 
     }
 }
