@@ -5,7 +5,7 @@ const file = document.getElementById('file').files[0];
 
 const inputImg = document.querySelector("#file")
 const previewImage =  function(){
-    console.log(2);
+    
     const reader = new FileReader();
 reader.onload = function(event) {
     var img = new Image();

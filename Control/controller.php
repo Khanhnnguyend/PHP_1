@@ -1,6 +1,9 @@
 <?php
+require_once("Model/validator.php");
+
 class ControlAction
 {
+
     public function productView()
     {
         $tags = Tags::all();
@@ -32,7 +35,6 @@ class ControlAction
             }
             $product->categories = $arrNewCats;
             $product->tags = $arrNewTags;
-
         }
 
 
@@ -47,7 +49,6 @@ class ControlAction
         $tags = Tags::all();
 
         include 'View/add_product.php';
-
     }
 
     public function updateProductView()
@@ -57,7 +58,7 @@ class ControlAction
         $tags = Tags::all();
         $product = Product::findID($id);
 
-        include 'View/update_product.php';
+        include 'View/add_product.php';
     }
 
     public function pageLoad()
@@ -78,9 +79,7 @@ class ControlAction
 
                 if ($nameTag) {
                     array_push($arrNewTags, $nameTag->tag_name);
-
                 }
-
             }
 
             foreach (json_decode($product->categories) as $cat) {
@@ -93,11 +92,54 @@ class ControlAction
             }
             $product->categories = $arrNewCats;
             $product->tags = $arrNewTags;
-
         }
 
 
         include 'View/product.php';
+    }
+
+    public function searchLoad()
+    {
+        $tags = Tags::all();
+        $categories = Categories::all();
+
+        $name = $_GET['search'];
+        $page_search = $_GET['page_search'];
+
+        $take = ($page_search - 1) * 5;
+        $totalPage = Product::findName($name);
+        $sql = "select * from product where product_name like '%$name%' limit 5 offset $take";
+        $products = Product::condition($sql);
+        foreach ($products as $product) {
+            $arrNewTags = [];
+            $arrNewCats = [];
+            foreach (json_decode($product->tags) as $tag) {
+
+                $nameTag = Tags::findID($tag);
+
+                if ($nameTag) {
+                    array_push($arrNewTags, $nameTag->tag_name);
+                }
+            }
+
+            foreach (json_decode($product->categories) as $cat) {
+
+                $nameCat = Categories::findID($cat);
+
+                if ($nameCat) {
+                    array_push($arrNewCats, $nameCat->cat_name);
+                }
+            }
+            $product->categories = $arrNewCats;
+            $product->tags = $arrNewTags;
+        }
+
+        include 'View/product.php';
+        echo "<input id='total_search' type='hidden' value='";
+        echo count($totalPage);
+        echo "'>";
+
+        echo "<script> pageSearch() </script>";
     }
 
     public function page()
@@ -133,7 +175,6 @@ class ControlAction
             }
             $product->categories = $arrNewCats;
             $product->tags = $arrNewTags;
-
         }
 
         foreach ($products as $product) {
@@ -144,11 +185,15 @@ class ControlAction
         <td scope='col'> $product->sku </td>
         <td scope='col'> $product->price </td>
         <td scope='col'>
-            <img style='max-width: 80px;' src=https://localhost/PHP_1/assets/upload/$product->image alt=' '>
+            <img style='max-width: 80px;' src=";
+            echo $GLOBALS['linkpath'];
+            echo "/assets/upload/$product->image alt=' '>
         </td>
         <td scope='col'>";
             foreach (json_decode($product->gallery) as $gal) {
-                echo "<img style='max-width: 40px;' src=https://localhost/PHP_1/assets/upload/$gal alt=' '>
+                echo "<img style='max-width: 40px;' src=";
+                echo $GLOBALS['linkpath'];
+                echo "/assets/upload/$gal alt=' '>
                                 
                            ";
             }
@@ -159,8 +204,7 @@ class ControlAction
                     echo $cat . ",";
                 } else {
                     echo $cat;
-                }
-                ;
+                };
             }
 
             echo "
@@ -172,8 +216,7 @@ class ControlAction
                     echo $tag . ", ";
                 } else {
                     echo $tag;
-                }
-                ;
+                };
             }
 
             echo " </td>
@@ -188,11 +231,8 @@ class ControlAction
 
 
     </tr>
-    ";
-            ;
+    ";;
         }
-
-
     }
 
     public function addProperty()
@@ -202,7 +242,7 @@ class ControlAction
 
     public function addProduct()
     {
-
+        $val = new Validate();
 
 
         $name_product = $_POST['name_product'];
@@ -219,19 +259,45 @@ class ControlAction
 
         $product = new Product();
 
-        $product->product_name = $name_product;
-        $product->sku = $sku;
+        $product->product_name = $val->enCode($name_product);
+        $product->sku = $val->enCode($sku);
+        if (is_numeric($price)) {
+            if ($price < 0) {
+                echo "<script> alert(' price không hợp lệ') </script>";
+                return;
+            }
+        } else {
+            echo "<script> alert('price không phải số ')</script>";
+            return;
+        }
         $product->price = $price;
+
+        if ($date > date("Y-m-d")) {
+            echo "<script> alert('date không hợp lệ ')</script>";
+            return;
+        }
+        $product->date = $date;
 
         if ($date == "") {
             $product->date = date("Y-m-d");
-        } else {
-            $product->date = $date;
         }
+
+        unset($val);
+
+
 
         $product->id = null;
 
         $filePic = "";
+
+        $type = $_FILES['image']['type'];
+        $extensions = array('image/jpeg', 'image/png', 'image/gif');
+        if (!in_array($type, $extensions)) {
+            echo "<script> alert('ảnh không hợp lệ ')</script>";
+            return;
+        }
+
+
 
         if ($img['size'] > 0) {
             $filePic = $img['name'];
@@ -256,6 +322,15 @@ class ControlAction
         }
         $product->categories = json_encode($totalCat);
 
+        foreach ($_FILES['gallery']['type'] as $type) {
+
+            $extensions = array('image/jpeg', 'image/png', 'image/gif');
+            if (!in_array($type, $extensions)) {
+                echo "<script> alert('ảnh gallery không hợp lệ ')</script>";
+                return;
+            }
+        }
+
 
         $totalGal = [];
 
@@ -277,16 +352,17 @@ class ControlAction
 
         $product->insert();
 
-        //header('location:http://localhost/PHP_1/index.php?controller=add_product');
 
 
-        echo "<script> window.location.href ='http://localhost/PHP_1/index.php?controller=add_product'</script>";
 
+        echo "<script> window.location.href ='";
+        echo $GLOBALS['linkpath'];
+        echo "/index.php?controller=add_product'</script>";
     }
 
     public function updateProduct()
     {
-
+        $val = new Validate();
         $name_product = $_POST['name_product'];
         $sku = $_POST['sku'];
         $price = $_POST['price'];
@@ -302,13 +378,43 @@ class ControlAction
 
         $product = new Product();
 
-        $product->product_name = $name_product;
-        $product->sku = $sku;
+        $product->product_name = $val->enCode($name_product);
+        $product->sku = $val->enCode($sku);
+        if (is_numeric($price)) {
+            if ($price < 0) {
+                echo "<script> alert(' price không hợp lệ') </script>";
+                return;
+            }
+        } else {
+            echo "<script> alert('price không phải số ')</script>";
+            return;
+        }
         $product->price = $price;
-        $product->date = $date;
-        $product->id = $_GET['product_id'];
-        ;
 
+        if ($date > date("Y-m-d")) {
+            echo "<script> alert('date không hợp lệ ')</script>";
+            return;
+        }
+        $product->date = $date;
+
+        if ($date == "") {
+            $product->date = date("Y-m-d");
+        }
+
+        unset($val);
+
+
+
+        $product->id = $_GET['product_id'];;
+
+
+
+        $type = $_FILES['image']['type'];
+        $extensions = array('image/jpeg', 'image/png', 'image/gif');
+        if (!in_array($type, $extensions)) {
+            echo "<script> alert('ảnh không hợp lệ ')</script>";
+            return;
+        }
         $filePic = "";
 
         if ($img['size'] > 0) {
@@ -337,6 +443,15 @@ class ControlAction
         $product->categories = json_encode($totalCat);
 
 
+        foreach ($_FILES['gallery']['type'] as $type) {
+
+            $extensions = array('image/jpeg', 'image/png', 'image/gif');
+            if (!in_array($type, $extensions)) {
+                echo "<script> alert('ảnh gallery không hợp lệ ')</script>";
+                return;
+            }
+        }
+
         $totalGal = [];
 
         $galleries = array_map(function ($gallery1, $gallery2) {
@@ -364,7 +479,6 @@ class ControlAction
             } else {
                 $totalGal = [];
             }
-
         }
 
         if (isset($_POST['gallery_old'])) {
@@ -382,13 +496,21 @@ class ControlAction
         $product->update();
 
         //header('location:index.php?page=1');
-        echo "<script> window.location.href ='http://localhost/PHP_1/index.php?page=1'</script>";
+        echo "<script> window.location.href ='";
+        echo $GLOBALS['linkpath'];
+        echo "/index.php?page=1'</script>";
     }
 
     public function search()
     {
+        $val = new Validate();
         $page = $_GET["page_search"];
         $findSymbol = $_GET['search'];
+
+        $findSymbol = $val->enCode($findSymbol);
+
+        echo $findSymbol;
+        unset($val);
 
         $products = Product::findName($findSymbol);
 
@@ -418,7 +540,6 @@ class ControlAction
             }
             $product->categories = $arrNewCats;
             $product->tags = $arrNewTags;
-
         }
 
         $start = ($page - 1) * 5;
@@ -433,11 +554,15 @@ class ControlAction
         <td scope='col'> $product->sku </td>
         <td scope='col'> $product->price </td>
         <td scope='col'>
-            <img style='max-width: 80px;' src=https://localhost/PHP_1/assets/upload/$product->image alt=' '>
+            <img style='max-width: 80px;' src=";
+                echo $GLOBALS['linkpath'];
+                echo "/assets/upload/$product->image alt=' '>
         </td>
         <td scope='col'>";
                 foreach (json_decode($product->gallery) as $gal) {
-                    echo "<img style='max-width: 40px;' src=https://localhost/PHP_1/assets/upload/$gal alt=' '>
+                    echo "<img style='max-width: 40px;' src=";
+                    echo $GLOBALS['linkpath'];
+                    echo "/assets/upload/$gal alt=' '>
                                 
                            ";
                 }
@@ -448,8 +573,7 @@ class ControlAction
                         echo $cat . ", ";
                     } else {
                         echo $cat;
-                    }
-                    ;
+                    };
                 }
 
                 echo "
@@ -463,8 +587,7 @@ class ControlAction
                         echo $tag . ", ";
                     } else {
                         echo $tag;
-                    }
-                    ;
+                    };
                 }
 
                 echo "
@@ -486,7 +609,6 @@ class ControlAction
     ";
             }
             $countLoop++;
-
         }
         echo "<input id='total_search' type='hidden' value='";
         echo count($products);
@@ -495,6 +617,7 @@ class ControlAction
     //filter
     public function filterSearch()
     {
+        $val = new Validate();
 
         $page = $_GET['page_filter'];
         $sort = $_GET['sort'];
@@ -505,6 +628,43 @@ class ControlAction
         $day_to = $_GET['day_to'];
         $price_from = $_GET['price_from'];
         $price_to = $_GET['price_to'];
+
+
+        $pattern = '/^\d{4}-\d{2}-\d{2}$/';
+
+        $sort = $val->enCode($sort);
+
+        $sortBy = $val->enCode($sortBy);
+        $category = $val->enCode($category);
+        $tagFind = $val->enCode($tagFind);
+
+        
+        
+        if ((preg_match($pattern, $day_from) !=1&&$day_from!="" )||
+        ( preg_match($pattern, $day_to)!=1 && $day_to != "")) {
+            echo '<p class="err_message_filter">Sai trường thông tin</p>';
+            return;
+        } else {
+            if (strtotime($day_from) && $day_from!="" > strtotime($day_to) && $day_to != "") {
+                echo  '<p class="err_message_filter">Sai trường thông tin</p>';
+                return;
+            }
+        }
+
+        if ((is_numeric($price_from)!=1 && $price_from!="" )||
+        ( is_numeric($price_to)!=1 && $price_to!= "")) {
+            echo '<p class="err_message_filter">Sai trường thông tin</p>';
+            return;
+        } else {
+            if ( $price_from != "" &&  (float)$price_from  > $price_to != ""&& (float)$price_to) {
+                echo '<p class="err_message_filter">Sai trường thông tin</p>';
+                return;
+            } 
+            if((float)$price_from <= 0 || (float)$price_to <= 0 ){
+                echo '<p class="err_message_filter">Sai trường thông tin</p>';
+                return;
+            }
+        }
 
         $filterArr = [
             'sort' => $sort,
@@ -548,7 +708,6 @@ class ControlAction
             }
             $product->categories = $arrNewCats;
             $product->tags = $arrNewTags;
-
         }
         $start = ($page - 1) * 5;
         $countLoop = 0;
@@ -562,11 +721,15 @@ class ControlAction
         <td scope='col'> $product->sku </td>
         <td scope='col'> $product->price </td>
         <td scope='col'>
-            <img style='max-width: 80px;' src=https://localhost/PHP_1/assets/upload/$product->image alt=' '>
+            <img style='max-width: 80px;' src=";
+                echo $GLOBALS['linkpath'];
+                echo "/assets/upload/$product->image alt=' '>
         </td>
         <td scope='col'>";
                 foreach (json_decode($product->gallery) as $gal) {
-                    echo "<img style='max-width: 40px;' src=https://localhost/PHP_1/assets/upload/$gal alt=' '>
+                    echo "<img style='max-width: 40px;' src=";
+                    echo $GLOBALS['linkpath'];
+                    echo "/assets/upload/$gal alt=' '>
                                 
                            ";
                 }
@@ -577,8 +740,7 @@ class ControlAction
                         echo $cat . ", ";
                     } else {
                         echo $cat;
-                    }
-                    ;
+                    };
                 }
 
                 echo "
@@ -592,8 +754,7 @@ class ControlAction
                         echo $tag . ", ";
                     } else {
                         echo $tag;
-                    }
-                    ;
+                    };
                 }
 
                 echo "
@@ -612,13 +773,10 @@ class ControlAction
     ";
             }
             $countLoop++;
-
-
         }
         echo "<input id='total_filter' type='hidden' value='";
         echo count($products);
         echo "'>";
-
     }
 
     public function delete()
@@ -630,9 +788,14 @@ class ControlAction
 
     public function addTag()
     {
+        $val = new Validate();
+
         $name_tag = $_POST['name_tag'];
         $des_tag = $_POST['tag_description'];
 
+        $name_tag = $val->enCode($name_tag);
+        $des_tag = $val->enCode($des_tag);
+        unset($val);
         $tag = new Tags();
 
         $tag->tag_name = $name_tag;
@@ -641,13 +804,17 @@ class ControlAction
         $tag->insert();
 
         header('location:index.php?controller=add_property');
-
     }
 
     public function addCat()
     {
+        $val = new Validate();
+
         $name_cat = $_POST['name_cat'];
         $des_cat = $_POST['cat_description'];
+        $name_cat = $val->enCode($name_cat);
+        $des_cat = $val->enCode($des_cat);
+        unset($val);
 
         $cat = new Categories();
 
@@ -661,6 +828,5 @@ class ControlAction
 
     public function filterLoad()
     {
-
     }
 }

@@ -6,8 +6,14 @@
     require 'Control/controller.php';
 
     $controlAction = new ControlAction();
-
+    $root = $_SERVER['PHP_SELF'];
+    $root= str_replace('/index.php', '', $root);
+    $GLOBALS['root'] =$root;
+    $GLOBALS['linkpath'] = "http://".basename($_SERVER['HTTP_HOST']).$root;
+    
    
+  
+ 
 
     $controller = isset($_GET['controller']) == true ? $_GET['controller'] : "index.php";
 	switch($controller){
@@ -47,7 +53,7 @@
         $controlAction->updateProduct();
     }
 
-    if(isset($_GET['search']) ) {
+    if(isset($_GET['search']) && isset($_GET['notloadpage']) )  {
         $controlAction->search();
        
     }
@@ -94,7 +100,8 @@
 
     if(isset($_GET['search'])&& !isset($_GET['notloadpage']) ) {
        
-        
+       
+       $controlAction->searchLoad();
         
     }
     

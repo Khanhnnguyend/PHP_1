@@ -2,7 +2,6 @@ let countPage = 0
         let pages = document.querySelectorAll('.page')
 
 
-
         for (let i = 0; i < pages.length; i++) {
 
             pages[i].addEventListener('click', function(event) {
@@ -11,9 +10,9 @@ let countPage = 0
                     page: "index.php"
                 };
                 var newTitle = "Page 1";
-
-                var newUrl = `/PHP_1/index.php?page=${i+1}`;
-                console.log(newUrl);
+                
+                var newUrl = `${file}/index.php?page=${i+1}`;
+              
                 history.pushState(newState, newTitle, newUrl);
                 document.title = newTitle;
 
@@ -74,16 +73,16 @@ let countPage = 0
 
         function searchProduct() {
             let str = document.querySelector("#search_input").value.trim()
-            let search =str.replaceAll("'", "").replaceAll('"',"")
+            let search = str
 
-            console.log(search)
+
             event.preventDefault();
                 var newState = {
                     page: "index.php"
                 };
                 var newTitle = "Search";
 
-                var newUrl = "/PHP_1/" +"index.php?search=" + search+"&page_search=1"
+                var newUrl = file+"/" +"index.php?search=" + search+"&page_search=1"
                
                 history.pushState(newState, newTitle, newUrl);
                 document.title = newTitle;
@@ -91,11 +90,19 @@ let countPage = 0
             
             if (search == "") {
                 document.querySelector("tbody").innerHTML = "";
+                let pageSearchBtn = document.querySelector('.pagination')
+      
+                let liPage = pageSearchBtn.querySelectorAll('li')
+                
+                for(let i =0; i< liPage.length; i++){
+                    pageSearchBtn.removeChild(liPage[i])
+                  
+                }
                 return;
             } else {
                 var xmlhttp = new XMLHttpRequest();
 
-                xmlhttp.open("GET", "index.php?search=" + search+"&page_search=1", true);
+                xmlhttp.open("GET", "index.php?search=" + search+"&page_search=1"+"&notloadpage", true);
                 xmlhttp.send();
 
                 xmlhttp.onreadystatechange = function() {
@@ -158,16 +165,17 @@ let countPage = 0
         for(let i =0; i<pageSearchBtnNew.length; i++){
             pageSearchBtnNew[i].addEventListener('click', function(event){
                 let str = document.querySelector("#search_input").value.trim()
-                let search =str.replaceAll("'", "").replaceAll('"',"")
+                
             
-console.log(search)
+
             event.preventDefault();
+            
                 var newState = {
                     page: "index.php"
                 };
                 var newTitle = "Search";
 
-                var newUrl = "/PHP_1/" +"index.php?"  + "&search=" +search+ "&page_search="+(i+1)
+                var newUrl = file +"/index.php?"  + "&search=" +search+ "&page_search="+(i+1)
                 history.pushState(newState, newTitle, newUrl);
                 document.title = newTitle;
 
@@ -217,7 +225,7 @@ console.log(search)
                 };
                 var newTitle = "Filter";
 
-                var newUrl = "/PHP_1/" +"index.php?"  + "&filter_search=" + "&page_filter=1"+ "&sort_by=" + sortby.value + "&sort=" + sort.value + "&category=" + category_filter.value + "&tag=" + tag_filter.value + "&day_from=" + day_from.value + "&day_to=" + day_to.value + "&price_from=" + price_from.value + "&price_to=" + price_to.value
+                var newUrl = file +"/index.php?"  + "&filter_search=" + "&page_filter=1"
                
                 history.pushState(newState, newTitle, newUrl);
                 document.title = newTitle;
@@ -303,8 +311,7 @@ console.log(search)
                 };
                 var newTitle = "Filter";
 
-                var newUrl = "/PHP_1/" +"index.php?"  + "&filter_search=" + "&page_filter="+(i+1)+ "&sort_by=" + sortby.value + "&sort=" + sort.value + "&category=" + category_filter.value + "&tag=" + tag_filter.value + "&day_from=" + day_from.value + "&day_to=" + day_to.value + "&price_from=" + price_from.value + "&price_to=" + price_to.value
-               
+                var newUrl = file +"/index.php?"  + "&filter_search=" + "&page_filter="+(i+1)
                 history.pushState(newState, newTitle, newUrl);
                 document.title = newTitle;
 

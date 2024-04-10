@@ -29,10 +29,10 @@ function validator(options) {
             inputElement.classList.remove('invalid')
         }
     }
-    
+
 
     if (formValidate) {
-        
+
         options.rules.forEach(rule => {
 
 
@@ -53,8 +53,9 @@ function validator(options) {
 
                 }
 
+
                 inputElement.oninput = function () {
-                   
+
                     let errorElement = formValidate.parentElement.querySelector('.form-message')
 
                     errorElement.innerText = ''
@@ -85,7 +86,7 @@ validator.isNumber = function (selector) {
 }
 
 validator.isChooseOne = function (selector) {
-    
+
     return {
         selector: selector,
         test: function (value) {
@@ -94,26 +95,62 @@ validator.isChooseOne = function (selector) {
             return anySelect ? "Vui lòng chọn một!" : undefined
         }
     }
-} 
+}
 
 validator.onlyText = function (selector) {
     return {
         selector: selector,
         test: function (value) {
-            let regex = /^[a-z0-9A-ZÃ€ÃÃ‚ÃƒÃˆÃ‰ÃŠÃŒÃÃ’Ã“Ã”Ã•Ã™ÃšÄ‚ÄÄ¨Å¨Æ Ã Ã¡Ã¢Ã£Ã¨Ã©ÃªÃ¬Ã­Ã²Ã³Ã´ÃµÃ¹ÃºÄƒÄ‘Ä©Å©Æ¡Æ¯Ä‚áº áº¢áº¤áº¦áº¨áºªáº¬áº®áº°áº²áº´áº¶áº¸áººáº¼á»€á»€á»‚áº¾Æ°Äƒáº¡áº£áº¥áº§áº©áº«áº­áº¯áº±áº³áºµáº·áº¹áº»áº½á»á»á»ƒáº¿á»„á»†á»ˆá»Šá»Œá»Žá»á»’á»”á»–á»˜á»šá»œá»žá» á»¢á»¤á»¦á»¨á»ªá»…á»‡á»‰á»‹á»á»á»‘á»“á»•á»—á»™á»›á»á»Ÿá»¡á»£á»¥á»§á»©á»«á»¬á»®á»°á»²á»´Ãá»¶á»¸á»­á»¯á»±á»³á»µá»·á»¹\s\W|_]+$/;
-            return regex.test(value.trim()) ? "Chỉ nhập chữ" : undefined
+            let regex = /^[a-z0-9A-ZàáạảãâầấậẩẫăắặằẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơớợởỡùúụủũưứựửữỳýỵỷỹđÀÁẠẢÃÂẦẤẬẨẪĂẮẶẰẲẴÈÉẸẺẼÊỀẾỆỂỄÌÍỊỈĨÒÓỌỎÕÔỒỐỘỔỖƠỚỢỞỠÙÚỤỦŨƯỨỰỬỮỲÝỴỶỸĐ\s]+$/
+            return !regex.test(value.trim()) ? "Chỉ nhập chữ và số" : undefined
         }
     }
 }
 
-validator.isImage = function (selector){
+validator.isImage = function (selector) {
     return {
         selector: selector,
         test: function (value) {
-            let inputFile = document.querySelector(selector).value
-            console.log(inputFile)
-            let regex = /[\/.](gif|jpg|jpeg|tiff|png)$/i;
-            return regex.test(inputFile) ? "Vui chọn ảnh!" : undefined
+
+            document.querySelector(selector).onchange = function () {
+                let inputFile = document.querySelector(selector).value
+                var file = inputFile.split(`\\`);
+                let fileStr = file[file.length - 1]
+
+                console.log(inputFile);
+                let regex = /[^\s]+(.*?).(jpg|jpeg|png|gif|JPG|JPEG|PNG|GIF)$/
+                console.log(regex.test(fileStr));
+                return !regex.test(fileStr) ? "Vui lòng chọn file ảnh!" : undefined
+            }
+
+
+        }
+    }
+}
+validator.isPositiveNumber = function (selector) {
+    return {
+        selector: selector,
+        test: function (value) {
+            return value < 0 ? "Không được nhỏ hơn 0!" : undefined
+        }
+    }
+}
+
+validator.isDatePositive = function (selector) {
+    return {
+        selector: selector,
+        test: function (value) {
+            const date = new Date();
+
+            const year = date.getFullYear();
+            const month = date.getMonth() + 1;
+            const day = date.getDate() ;
+
+            const formattedDate = `${year}-${month}-${day+1}`;
+            const dateCurent = Date.parse(formattedDate)
+            const dateValue = Date.parse(value)
+           
+            return dateValue > dateCurent ? "Không được lớn hơn ngày hiện tại" : undefined
         }
     }
 }

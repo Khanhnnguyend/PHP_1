@@ -1,10 +1,11 @@
 <?php 
     class DB_Config{
          public $connection;
-
-
+        public $severName = "localhost"; 
+        public $database ="db_khanh";
         public function __construct(){
-            $this->connection = new PDO("mysql:host=localhost; dbname=PHP_1;charset=utf8", 'root', '');
+            
+            $this->connection = new PDO("mysql:host=$this->severName; dbname=$this->database;charset=utf8", 'root', '');
 
     }
 
@@ -175,21 +176,22 @@
             $model->sql .= " price > '$obj->price_from' ". "and";
         }
 
-        if($obj->price_to != null && $obj->price_from != null){
+        if($obj->price_to != null && $obj->price_from == null){
             $model->sql .= " price < '$obj->price_to' ". "and";
         }
         
+
         
         $model->sql = substr($model->sql , 0, -strlen(strrchr($model->sql , ' ')));
 
         $model->sql .=" order by  $obj->sortBy " ."$obj->sort";
-        
+        echo $model->sql;
 
          $stmt = $model->connection->prepare($model->sql);
         $stmt->execute();
         $result = $stmt->fetchAll(PDO::FETCH_CLASS, get_class($model));
         if (count($result) == 0) {
-            echo"khong co";
+            
         }
         return $result;
     }

@@ -109,7 +109,7 @@
                 
                 <div class="upload__img-box">
                   <input type="hidden" value="<?php echo $gal ?>" name="gallery_old[]">
-                  <div style='background-image: url("https://localhost/PHP_1/assets/upload/<?php echo $gal ?>")' data-number="<?php echo $count?>" data-file="<?php echo $gal?>" class="img-bg">
+                  <div style='background-image: url("./assets/upload/<?php echo $gal ?>")' data-number="<?php echo $count?>" data-file="<?php echo $gal?>" class="img-bg">
                     <div class="upload__img-close"></div>
                   </div>
                 </div>
@@ -132,7 +132,7 @@
 
 
 
-  <script src="http://localhost/PHP_1/JavaScript/validator.js">
+  <script src="./JavaScript/validator.js">
 
   </script>
   <script>
@@ -205,9 +205,9 @@ console.log(spanSelect)
   <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.0/dist/jquery.slim.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.full.min.js"></script>
-  <script src="http://localhost/PHP_1/JavaScript/multiTag.js">
+  <script src="./JavaScript/multiTag.js">
   </script>
-  <link rel="stylesheet" href="http://localhost/PHP_1/CSS/fileUpload.css">
+  <link rel="stylesheet" href="./CSS/fileUpload.css">
 
 </body>
 

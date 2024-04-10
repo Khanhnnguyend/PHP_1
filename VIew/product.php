@@ -4,26 +4,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+     integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link rel="stylesheet" href="https://localhost/PHP_1/CSS/product.css">
 
 
-    </script>
+   
     <title>Product</title>
 </head>
 
 <body>
     <div class="container">
 
-        <div class="p-4 mt-3" style="border: 1px solid #ced4da;
+        <div class="p-4 mt-3 position-relative" style="border: 1px solid #ced4da;
         box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;">
             <div class="row">
                 <div class="col">
-                    <a class="link_" href="index.php?controller=add_product"><button type="button" class="btn btn-primary btn-sm">Add product</button></a>
+                    <a class="link_" href="index.php?controller=add_product"><button type="button" class="btn btn-secondary btn-sm btn_hover border-0">Add product</button></a>
 
-                    <a href="index.php?controller=add_property"><button type="button" class="btn btn-primary btn-sm">Add property</button></a>
-                    <a href=""><button type="button" class="btn btn-primary btn-sm">Sync from VillaTheme</button></a>
+                    <a href="index.php?controller=add_property"><button type="button" class="btn btn-secondary btn-sm btn_hover border-0">Add property</button></a>
+                    <a href=""><button type="button" class="btn btn-secondary btn-sm btn_hover border-0">Sync from VillaTheme</button></a>
 
 
                 </div>
@@ -31,7 +31,8 @@
                     <form action="" onsubmit="return false">
                         <div class="input-group mb-3" style="border: 1px solid #ced4da;">
 
-                            <input id="search_input" name="search" type="text" class="form-control border-0" placeholder="Search product">
+                            <input id="search_input" name="search" type="text" class="form-control border-0" placeholder="Search product" value="<?php if(isset($_GET['search']))
+                            {echo $_GET['search'];} ?>">
                             <button class="btn border-0 rounded-circle bg-secondary text-white" id="button-addon2">
                                 <i class="fa-solid fa-magnifying-glass"></i>
                             </button>
@@ -105,11 +106,11 @@
                         <input type="number" id="price_to" class="form-control" placeholder="price to" name="price_to">
                     </div>
                     <div class="col">
-                        <button id="btn_filter" type="submit" name="filter_search" class="btn btn-primary btn-sm">filter</button>
+                        <button id="btn_filter" type="submit" name="filter_search" class="btn btn-secondary btn-sm btn_hover border-0">filter</button>
                     </div>
                 </form>
 
-
+                                <p class="filter_message"></p>
             </div>
         </div>
 
@@ -140,11 +141,11 @@
                             <td scope="col"><?php echo $product->sku ?></td>
                             <td scope="col"><?php echo $product->price ?></td>
                             <td scope="col">
-                                <img style="max-width: 80px;" src="https://localhost/PHP_1/assets/upload/<?php echo $product->image ?>" alt=" ">
+                                <img style="max-width: 80px;" src="./assets/upload/<?php echo $product->image ?>" alt=" ">
                             </td>
                             <td scope="col">
                                 <?php foreach (json_decode($product->gallery) as $gal) : ?>
-                                    <img style="max-width: 40px;" src="https://localhost/PHP_1/assets/upload/<?php echo $gal ?>" alt=" ">
+                                    <img style="max-width: 40px;" src="./assets/upload/<?php echo $gal ?>" alt=" ">
                                 <?php endforeach ?>
                             </td>
 
@@ -215,12 +216,18 @@
             </nav>
         </div>
     </div>
-
-    <script src="http://localhost/PHP_1/JavaScript/ajax.js"></script>
-   
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-    <script src="http://localhost/PHP_1/JavaScript/validator.js"></script>
-    <script src="http://localhost/PHP_1/JavaScript/search.js"></script>
+             
+    
+    
+    <script> var file = "<?php echo $GLOBALS['root'] ?>"; </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" 
+    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    
+    <script src="./JavaScript/ajax.js"></script>
+    <script src="./JavaScript/validator.js"></script>
+    <script src="./JavaScript/search.js"></script>
+    <script src="./JavaScript/filterValidate.js"></script>
+    <link rel="stylesheet" href="./CSS/product.css">
 </body>
 
 </html>
