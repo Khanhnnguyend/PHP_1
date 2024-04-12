@@ -1,4 +1,4 @@
-
+const regex = /^[0-9]+$/;
 let countPage = 0
 let pages = document.querySelectorAll('.page')
 
@@ -56,6 +56,10 @@ function deleBtn() {
 
 
             var idParent = del.closest('tr').id
+            if (!regex.test(idParent)) {
+
+                return
+            }
 
             var xmlhttp = new XMLHttpRequest();
 
@@ -84,13 +88,18 @@ function deleBtnSearch() {
 
         del.addEventListener('click', function (event) {
 
-
+            console.log("click")
             var idParent = del.closest('tr').id
+            if (!regex.test(idParent)) {
 
+                return
+            }
             var xmlhttp = new XMLHttpRequest();
 
             xmlhttp.open("GET", 'index.php?delete=' + idParent, true);
             xmlhttp.send();
+            let str = document.querySelector("#search_input").value.trim()
+            let search = str
 
             xmlhttp.onreadystatechange = function () {
                 if (this.readyState == 4 && this.status == 200) {
@@ -105,11 +114,94 @@ function deleBtnSearch() {
                                 document.querySelector("tbody").innerHTML = this.responseText;
 
                                 pageSearch()
-                                
+                                deleBtnSearch()
                             }
                         };
 
-                        
+
+                    }
+
+
+
+                }
+            };
+        })
+    })
+}
+
+function deleBtnFilter() {
+    var deleteIcon = document.querySelectorAll('.delete_icon')
+
+    deleteIcon.forEach(del => {
+
+        del.addEventListener('click', function (event) {
+
+            console.log("click")
+            var idParent = del.closest('tr').id
+            if (!regex.test(idParent)) {
+
+                return
+            }
+
+            var xmlhttp = new XMLHttpRequest();
+
+            var xmlhttp = new XMLHttpRequest();
+
+            xmlhttp.open("GET", "index.php?" + "sort_by=" + sortby.value
+                + "&page_filter=1" + "&sort=" + sort.value + "&category=" + category_filter.value + "&tag="
+                + tag_filter.value + "&day_from=" + day_from.value + "&day_to=" + day_to.value + "&price_from="
+                + price_from.value + "&price_to=" + price_to.value + "&filter_search=" + "&notload", true);
+            xmlhttp.send();
+
+            xmlhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    if (this.responseText = 'success') {
+                        xmlhttp.open("GET", "index.php?" + "sort_by=" + sortby.value
+                            + "&page_filter=1" 
+                            + "&sort=" + sort.value 
+                            + "&category=" + category_filter.value 
+                            + "&tag="+ tag_filter.value 
+                            + "&day_from=" + day_from.value 
+                            + "&day_to=" + day_to.value 
+                            + "&price_from="+ price_from.value 
+                            + "&price_to=" + price_to.value 
+                            + "&filter_search=" + "&notload", true);
+                        xmlhttp.send();
+
+                        xmlhttp.onreadystatechange = function () {
+                            if (this.readyState == 4 && this.status == 200) {
+
+                                document.querySelector("tbody").innerHTML = this.responseText;
+
+                                filterPage()
+                                deleBtnFilter()
+                            }
+                        };
+
+
+
+                    }
+                };
+            }
+
+            xmlhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    if (this.responseText = 'success') {
+                        xmlhttp.open("GET", "index.php?search=" + search + "&page_search=" +
+                            document.querySelector('.page-present').innerText + "&notloadpage", true);
+                        xmlhttp.send();
+
+                        xmlhttp.onreadystatechange = function () {
+                            if (this.readyState == 4 && this.status == 200) {
+
+                                document.querySelector("tbody").innerHTML = this.responseText;
+
+                                pageSearch()
+                                deleBtnSearch()
+                            }
+                        };
+
+
                     }
 
 
@@ -148,9 +240,7 @@ function searchProduct() {
         if (this.readyState == 4 && this.status == 200) {
 
             document.querySelector("tbody").innerHTML = this.responseText;
-
             pageSearch()
-       
             deleBtnSearch()
         }
     };
@@ -232,10 +322,7 @@ function pageSearch() {
                     document.querySelector("tbody").innerHTML = this.responseText;
 
                     pageSearch()
-                 
                     deleBtnSearch()
-
-
 
                 }
             };

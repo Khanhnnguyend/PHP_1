@@ -148,11 +148,12 @@
         }
 
         if($obj->category != null){
-            $model->sql .= " categories = '%_$obj->category _%' ". "and";
+            $model->sql .= ' JSON_CONTAINS(categories, ' ."'".'"'.$obj->category.'"'."'". ') '. 'and';
+            
         }
 
         if($obj->tagFind != null){
-            $model->sql .= " tags = '$obj->tagFind' ". "and";
+            $model->sql .= ' JSON_CONTAINS(tags, ' ."'".'"'.$obj->tagFind.'"'."'". ') '. 'and';
         }
 
         if($obj->day_from != null && $obj->day_to != null){
@@ -187,7 +188,7 @@
         $model->sql .=" order by  $obj->sortBy " ."$obj->sort";
        
         
-
+        
          $stmt = $model->connection->prepare($model->sql);
         $stmt->execute();
         $result = $stmt->fetchAll(PDO::FETCH_CLASS, get_class($model));

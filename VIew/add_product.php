@@ -27,20 +27,20 @@
         <div class="col">
           <div class="mb-4">
             <label for="" class="form-label">Product name</label>
-            <input type="text" value="<?php if(isset($product)) echo $product->product_name ?>" class="form-control" id=""
+            <input type="text" value="<?php if(isset($product)) echo $product->product_name ?>" class="form-control <?php if(!isset($product)) echo 'invalid' ?>" id=""
               name="name_product">
             <p class="form-message" style="font-size:10px; color:red;"></p>
 
           </div>
           <div class="mb-4">
             <label for="" class="form-label">SKU</label>
-            <input type="text" value="<?php if(isset($product)) echo $product->sku ?>" class="form-control" id="" name="sku">
+            <input type="text" value="<?php if(isset($product)) echo $product->sku ?>" class="form-control <?php if(!isset($product)) echo 'invalid' ?>" id="" name="sku">
             <p class="form-message" style="font-size:10px; color:red;"></p>
           </div>
 
           <div class="mb-4">
             <label for="" class="form-label">Price</label>
-            <input type="number" value="<?php if(isset($product)) echo $product->price ?>" class="form-control" id="" name="price">
+            <input type="number" value="<?php if(isset($product)) echo $product->price ?>" class="form-control <?php if(!isset($product)) echo 'invalid' ?>" id="" name="price">
             <p class="form-message" style="font-size:10px; color:red;"></p>
 
           </div>
@@ -62,7 +62,7 @@
           </div>
           <div class="mb-4 tag-select">
             <label for="" class="form-label">Tags</label>
-            <select multiple name="tags[]" class="form-select" id="multiple-select-field-tag" data-placeholder="Tags">
+            <select multiple name="tags[]" class="form-select <?php if(!isset($product)) echo 'invalid' ?>" id="multiple-select-field-tag" data-placeholder="Tags">
 
               <?php foreach ($tags as $tag): ?>
                 <option <?php if(isset($product)) foreach (json_decode($product->tags) as $id_tag) {
@@ -80,7 +80,7 @@
 
           <div class="mb-4 cat-select">
             <label for="" class="form-label">Categories</label>
-            <select class="form-control" name="categories[]" id="multiple-select-field-cat" data-placeholder="category"
+            <select class="form-control <?php if(!isset($product)) echo 'invalid' ?>" name="categories[]" id="multiple-select-field-cat" data-placeholder="category"
               multiple>
               <?php foreach ($categories as $cat): ?>
                 <option <?php if(isset($product)) foreach (json_decode($product->categories) as $id_cat) {
@@ -160,6 +160,8 @@
       rules: [
         validator.isRequired("input[name=name_product]"),
         validator.isRequired("input[name=price]"),
+        validator.isChooseOne("select[name=tags]"),
+        validator.isChooseOne("select[name=categories]"),
         validator.isPositiveNumber("input[name=price]"),
         validator.isRequired("input[name=sku]"),
         validator.isDatePositive("input[name=date]"),
