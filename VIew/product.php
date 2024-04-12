@@ -32,7 +32,7 @@
                         <div class="input-group mb-3" style="border: 1px solid #ced4da;">
 
                             <input id="search_input" name="search" type="text" class="form-control border-0" placeholder="Search product" value="<?php if(isset($_GET['search']))
-                            {echo $_GET['search'];} ?>">
+                            {echo $name ;} ?>">
                             <button class="btn border-0 rounded-circle bg-secondary text-white" id="button-addon2">
                                 <i class="fa-solid fa-magnifying-glass"></i>
                             </button>
@@ -133,6 +133,8 @@
 
                 </thead>
                 <tbody>
+                    
+                <p class="page-present" hidden><?php echo $page ?></p>
 
                     <?php if ($products != null) foreach ($products as $product) : ?>
                         <tr id="<?php echo $product->id ?>">
@@ -197,7 +199,7 @@
                             <span aria-hidden="true">&laquo;</span>
                         </a>
                     </li>
-                    <?php for ($i = 1; $i <= $page; $i++) {
+                    <?php for ($i = 1; $i <= $take; $i++) {
 
                         echo '<li class="page-item"><a class="page-link page_';
                         echo ((int)$i);

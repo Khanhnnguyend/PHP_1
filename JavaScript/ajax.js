@@ -1,339 +1,388 @@
+
 let countPage = 0
-        let pages = document.querySelectorAll('.page')
+let pages = document.querySelectorAll('.page')
 
 
-        for (let i = 0; i < pages.length; i++) {
+for (let i = 0; i < pages.length; i++) {
 
-            pages[i].addEventListener('click', function(event) {
-                event.preventDefault();
-                var newState = {
-                    page: "index.php"
-                };
-                var newTitle = "Page 1";
-                
-                var newUrl = `${file}/index.php?page=${i+1}`;
-              
-                history.pushState(newState, newTitle, newUrl);
-                document.title = newTitle;
+    pages[i].addEventListener('click', function (event) {
+        event.preventDefault();
+        var newState = {
+            page: "index.php"
+        };
+        var newTitle = "Page 1";
 
-                pagePag(i + 1)
+        var newUrl = `${file}/index.php?page=${i + 1}`;
+
+        history.pushState(newState, newTitle, newUrl);
+        document.title = newTitle;
+        document.querySelector('.page-present').innerText = i + 1;
+
+        pagePag(i + 1)
 
 
 
-            })
+    })
+}
+
+
+
+function pagePag(page) {
+
+    var xmlhttp = new XMLHttpRequest();
+
+    xmlhttp.open("GET", `index.php?page=${page}&noneload`, true);
+    xmlhttp.send();
+
+    xmlhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+
+            document.querySelector("tbody").innerHTML = this.responseText;
+
+            deleBtn()
         }
- 
+    };
 
 
-        function pagePag(page) {
+}
+// document.querySelector('.page_1').addEventListener('click',pagePag)
+
+function deleBtn() {
+    var deleteIcon = document.querySelectorAll('.delete_icon')
+
+    deleteIcon.forEach(del => {
+
+        del.addEventListener('click', function (event) {
+
+
+            var idParent = del.closest('tr').id
 
             var xmlhttp = new XMLHttpRequest();
 
-            xmlhttp.open("GET", `index.php?page=${page}&noneload`, true);
+            xmlhttp.open("GET", 'index.php?delete=' + idParent, true);
             xmlhttp.send();
 
-            xmlhttp.onreadystatechange = function() {
+            xmlhttp.onreadystatechange = function () {
                 if (this.readyState == 4 && this.status == 200) {
+                    if (this.responseText = 'success') {
 
-                    document.querySelector("tbody").innerHTML = this.responseText;
+                        pagePag(document.querySelector('.page-present').innerText)
+                    }
 
-                    deleBtn()
+
+
                 }
             };
+        })
+    })
+}
+
+function deleBtnSearch() {
+    var deleteIcon = document.querySelectorAll('.delete_icon')
+
+    deleteIcon.forEach(del => {
+
+        del.addEventListener('click', function (event) {
 
 
-        }
-        // document.querySelector('.page_1').addEventListener('click',pagePag)
+            var idParent = del.closest('tr').id
 
-        function deleBtn() {
-            var deleteIcon = document.querySelectorAll('.delete_icon')
+            var xmlhttp = new XMLHttpRequest();
 
-            deleteIcon.forEach(del => {
+            xmlhttp.open("GET", 'index.php?delete=' + idParent, true);
+            xmlhttp.send();
 
-                del.addEventListener('click', function() {
-                    
-                    var idParent = del.closest('tr').id
+            xmlhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    if (this.responseText = 'success') {
+                        xmlhttp.open("GET", "index.php?search=" + search + "&page_search=" +
+                            document.querySelector('.page-present').innerText + "&notloadpage", true);
+                        xmlhttp.send();
 
-                    var xmlhttp = new XMLHttpRequest();
+                        xmlhttp.onreadystatechange = function () {
+                            if (this.readyState == 4 && this.status == 200) {
 
-                    xmlhttp.open("GET",'index.php?delete='+idParent, true);
-                    xmlhttp.send();
+                                document.querySelector("tbody").innerHTML = this.responseText;
 
-                    xmlhttp.onreadystatechange = function() {
-                        if (this.readyState == 4 && this.status == 200) {
-                            document.querySelector('tbody').removeChild(
-                                del.closest('tr')
-                            )
-                            
-                        }
-                    };
-                })
-            })
-        }
+                                pageSearch()
+                                
+                            }
+                        };
 
-        function searchProduct() {
-            let str = document.querySelector("#search_input").value.trim()
-            let search = str
-
-
-            event.preventDefault();
-                var newState = {
-                    page: "index.php"
-                };
-                var newTitle = "Search";
-
-                var newUrl = file+"/" +"index.php?search=" + search+"&page_search=1"
-               
-                history.pushState(newState, newTitle, newUrl);
-                document.title = newTitle;
-
-            
-            if (search == "") {
-                document.querySelector("tbody").innerHTML = "";
-                let pageSearchBtn = document.querySelector('.pagination')
-      
-                let liPage = pageSearchBtn.querySelectorAll('li')
-                
-                for(let i =0; i< liPage.length; i++){
-                    pageSearchBtn.removeChild(liPage[i])
-                  
-                }
-                return;
-            } else {
-                var xmlhttp = new XMLHttpRequest();
-
-                xmlhttp.open("GET", "index.php?search=" + search+"&page_search=1"+"&notloadpage", true);
-                xmlhttp.send();
-
-                xmlhttp.onreadystatechange = function() {
-                    if (this.readyState == 4 && this.status == 200) {
-
-                        document.querySelector("tbody").innerHTML = this.responseText;
-                       pageSearch()
-                        deleBtn()
+                        
                     }
-                };
 
-            }
 
+
+                }
+            };
+        })
+    })
+}
+
+
+
+function searchProduct() {
+    let str = document.querySelector("#search_input").value.trim()
+    let search = str
+
+
+    event.preventDefault();
+    var newState = {
+        page: "index.php"
+    };
+    var newTitle = "Search";
+
+    var newUrl = file + "/" + "index.php?search=" + search + "&page_search=1"
+
+    history.pushState(newState, newTitle, newUrl);
+    document.title = newTitle;
+
+
+    var xmlhttp = new XMLHttpRequest();
+
+    xmlhttp.open("GET", "index.php?search=" + search + "&page_search=1" + "&notloadpage", true);
+    xmlhttp.send();
+
+    xmlhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+
+            document.querySelector("tbody").innerHTML = this.responseText;
+
+            pageSearch()
+       
+            deleBtnSearch()
         }
+    };
 
-      
 
 
-            function pageSearch(){
-                
-                let pageSearchBtn = document.querySelector('.pagination')
-      
-            let liPage = pageSearchBtn.querySelectorAll('li')
-            
-            for(let i =0; i< liPage.length; i++){
-                pageSearchBtn.removeChild(liPage[i])
-              
-            }
+}
 
-            let totalPage =document.querySelector('#total_search').value
 
-            totalPage =Math.ceil(totalPage / 5)
-           let totalLi =`<li class="page-item">
+
+
+function pageSearch() {
+
+    let pageSearchBtn = document.querySelector('.pagination')
+
+    let liPage = pageSearchBtn.querySelectorAll('li')
+
+    for (let i = 0; i < liPage.length; i++) {
+        pageSearchBtn.removeChild(liPage[i])
+
+    }
+
+    let totalPage = document.querySelector('#total_search').value
+
+    totalPage = Math.ceil(totalPage / 5)
+    let totalLi = `<li class="page-item">
                         <a class="page-link" href="#" aria-label="Previous">
                             <span aria-hidden="true">&laquo;</span>
                         </a>
-                    </li>` 
+                    </li>`
 
-                    for(let j = 1; j<= totalPage; j++){
-                        totalLi += `<li class="page-item"><a class="page-link page_search${j} page_search" href="">${j}</a></li>`
-                    }
-                    totalLi += `<li class="page-item">
+    for (let j = 1; j <= totalPage; j++) {
+        totalLi += `<li class="page-item"><a class="page-link page_search${j} page_search" href="">${j}</a></li>`
+    }
+    totalLi += `<li class="page-item">
                         <a class="page-link" href="#" aria-label="Next">
                             <span aria-hidden="true">&raquo;</span>
                         </a>
                     </li>`
-                   pageSearchBtn.innerHTML= totalLi
-
-        
-        
+    pageSearchBtn.innerHTML = totalLi
 
 
-       
-            let pageSearchBtnNew = document.querySelectorAll('.page_search')
-       
-            var sortby = document.querySelector('#search_input')
-            
-      
-        
-        for(let i =0; i<pageSearchBtnNew.length; i++){
-            pageSearchBtnNew[i].addEventListener('click', function(event){
-                let str = document.querySelector("#search_input").value.trim()
-                
-            
 
+
+
+
+    let pageSearchBtnNew = document.querySelectorAll('.page_search')
+
+    var sortby = document.querySelector('#search_input')
+
+
+
+    for (let i = 0; i < pageSearchBtnNew.length; i++) {
+        pageSearchBtnNew[i].addEventListener('click', function (event) {
+
+            document.querySelector('.page-present').innerText = i + 1;
+            let str = document.querySelector("#search_input").value.trim()
+            let search = str;
             event.preventDefault();
-            
-                var newState = {
-                    page: "index.php"
-                };
-                var newTitle = "Search";
 
-                var newUrl = file +"/index.php?"  + "&search=" +search+ "&page_search="+(i+1)
-                history.pushState(newState, newTitle, newUrl);
-                document.title = newTitle;
-
-
-                var xmlhttp = new XMLHttpRequest();
-
-            xmlhttp.open("GET", "index.php?"  + "&search=" +search+ "&page_search="+(i+1)+"&notloadpage",true)   
-             xmlhttp.send();
-
-            xmlhttp.onreadystatechange = function() {
-                if (this.readyState == 4 && this.status == 200) {
-
-                    document.querySelector("tbody").innerHTML = this.responseText;
-                    pageSearch()
-                    deleBtn()
-                    
-                }
+            var newState = {
+                page: "index.php"
             };
+            var newTitle = "Search";
 
-
-            })
-        }
-            }
-
-
-
-
-
-        deleBtn()
-
-//filter ajax
-        document.querySelector('#btn_filter').addEventListener('click', function (event) {
-
-            var sortby = document.querySelector('#sort_by')
-            var sort = document.querySelector('#sort')
-            var category_filter = document.querySelector('#category_filter')
-            var tag_filter = document.querySelector('#tag_filter')
-            var day_from = document.querySelector('#day_from')
-            var day_to = document.querySelector('#day_to')
-            var price_from = document.querySelector('#price_from')
-            var price_to = document.querySelector('#price_to')
-
-
-            event.preventDefault();
-                var newState = {
-                    page: "index.php"
-                };
-                var newTitle = "Filter";
-
-                var newUrl = file +"/index.php?"  + "&filter_search=" + "&page_filter=1"
-               
-                history.pushState(newState, newTitle, newUrl);
-                document.title = newTitle;
+            var newUrl = file + "/index.php?" + "&search=" + search + "&page_search=" + (i + 1)
+            history.pushState(newState, newTitle, newUrl);
+            document.title = newTitle;
 
 
             var xmlhttp = new XMLHttpRequest();
 
-            xmlhttp.open("GET", "index.php?" + "sort_by=" + sortby.value 
-            + "&page_filter=1"+ "&sort=" + sort.value + "&category=" + category_filter.value + "&tag=" 
-            + tag_filter.value + "&day_from=" + day_from.value + "&day_to=" + day_to.value + "&price_from=" 
-            + price_from.value + "&price_to=" + price_to.value + "&filter_search="+"&notload", true);
+            xmlhttp.open("GET", "index.php?" + "&search=" + search + "&page_search=" + (i + 1) + "&notloadpage", true)
             xmlhttp.send();
 
-            xmlhttp.onreadystatechange = function() {
+            xmlhttp.onreadystatechange = function () {
                 if (this.readyState == 4 && this.status == 200) {
 
                     document.querySelector("tbody").innerHTML = this.responseText;
-                    filterPage()
-                    deleBtn()
-                    
+
+                    pageSearch()
+                 
+                    deleBtnSearch()
+
+
+
                 }
             };
-
 
 
         })
-       
+    }
+}
 
 
-        function filterPage(){
-            let pageFilerBtn = document.querySelector('.pagination')
-      
-            let liPage = pageFilerBtn.querySelectorAll('li')
-            
-            for(let i =0; i< liPage.length; i++){
-                pageFilerBtn.removeChild(liPage[i])
-                
-            }
 
-            let totalPage =document.querySelector('#total_filter').value
 
-            totalPage =Math.ceil(totalPage / 5)
-           let totalLi =`<li class="page-item">
+
+deleBtn()
+
+//filter ajax
+document.querySelector('#btn_filter').addEventListener('click', function (event) {
+
+    var sortby = document.querySelector('#sort_by')
+    var sort = document.querySelector('#sort')
+    var category_filter = document.querySelector('#category_filter')
+    var tag_filter = document.querySelector('#tag_filter')
+    var day_from = document.querySelector('#day_from')
+    var day_to = document.querySelector('#day_to')
+    var price_from = document.querySelector('#price_from')
+    var price_to = document.querySelector('#price_to')
+
+
+    event.preventDefault();
+    var newState = {
+        page: "index.php"
+    };
+    var newTitle = "Filter";
+
+    var newUrl = file + "/index.php?" + "&filter_search=" + "&page_filter=1"
+
+    history.pushState(newState, newTitle, newUrl);
+    document.title = newTitle;
+
+
+    var xmlhttp = new XMLHttpRequest();
+
+    xmlhttp.open("GET", "index.php?" + "sort_by=" + sortby.value
+        + "&page_filter=1" + "&sort=" + sort.value + "&category=" + category_filter.value + "&tag="
+        + tag_filter.value + "&day_from=" + day_from.value + "&day_to=" + day_to.value + "&price_from="
+        + price_from.value + "&price_to=" + price_to.value + "&filter_search=" + "&notload", true);
+    xmlhttp.send();
+
+    xmlhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+
+            document.querySelector("tbody").innerHTML = this.responseText;
+            filterPage()
+            //delete need to change
+
+            deleBtn()
+
+        }
+    };
+
+
+
+})
+
+
+
+function filterPage() {
+    let pageFilerBtn = document.querySelector('.pagination')
+
+    let liPage = pageFilerBtn.querySelectorAll('li')
+
+    for (let i = 0; i < liPage.length; i++) {
+        pageFilerBtn.removeChild(liPage[i])
+
+    }
+
+    let totalPage = document.querySelector('#total_filter').value
+
+    totalPage = Math.ceil(totalPage / 5)
+    let totalLi = `<li class="page-item">
                         <a class="page-link" href="#" aria-label="Previous">
                             <span aria-hidden="true">&laquo;</span>
                         </a>
-                    </li>` 
+                    </li>`
 
-                    for(let j = 1; j<= totalPage; j++){
-                        totalLi += `<li class="page-item"><a class="page-link page_filter${j} page_filter" href="">${j}</a></li>`
-                    }
-                    totalLi += `<li class="page-item">
+    for (let j = 1; j <= totalPage; j++) {
+        totalLi += `<li class="page-item"><a class="page-link page_filter${j} page_filter" href="">${j}</a></li>`
+    }
+    totalLi += `<li class="page-item">
                         <a class="page-link" href="#" aria-label="Next">
                             <span aria-hidden="true">&raquo;</span>
                         </a>
                     </li>`
-                    pageFilerBtn.innerHTML= totalLi
-
-        
-        
+    pageFilerBtn.innerHTML = totalLi
 
 
-       
-            let pageBtnNew = document.querySelectorAll('.page_filter')
-       
-        var sortby = document.querySelector('#sort_by')
-            var sort = document.querySelector('#sort')
-            var category_filter = document.querySelector('#category_filter')
-            var tag_filter = document.querySelector('#tag_filter')
-            var day_from = document.querySelector('#day_from')
-            var day_to = document.querySelector('#day_to')
-            var price_from = document.querySelector('#price_from')
-            var price_to = document.querySelector('#price_to')
-      
-        
-        for(let i =0; i<pageBtnNew.length; i++){
-            pageBtnNew[i].addEventListener('click', function(event){
+
+
+
+
+    let pageBtnNew = document.querySelectorAll('.page_filter')
+
+    var sortby = document.querySelector('#sort_by')
+    var sort = document.querySelector('#sort')
+    var category_filter = document.querySelector('#category_filter')
+    var tag_filter = document.querySelector('#tag_filter')
+    var day_from = document.querySelector('#day_from')
+    var day_to = document.querySelector('#day_to')
+    var price_from = document.querySelector('#price_from')
+    var price_to = document.querySelector('#price_to')
+
+
+    for (let i = 0; i < pageBtnNew.length; i++) {
+        pageBtnNew[i].addEventListener('click', function (event) {
 
 
             event.preventDefault();
-                var newState = {
-                    page: "index.php"
-                };
-                var newTitle = "Filter";
+            var newState = {
+                page: "index.php"
+            };
+            var newTitle = "Filter";
 
-                var newUrl = file +"/index.php?"  + "&filter_search=" + "&page_filter="+(i+1)
-                history.pushState(newState, newTitle, newUrl);
-                document.title = newTitle;
+            var newUrl = file + "/index.php?" + "&filter_search=" + "&page_filter=" + (i + 1)
+            history.pushState(newState, newTitle, newUrl);
+            document.title = newTitle;
 
 
-                var xmlhttp = new XMLHttpRequest();
+            var xmlhttp = new XMLHttpRequest();
 
-            xmlhttp.open("GET", "index.php?" + "sort_by=" + sortby.value + "&page_filter="+(i+1)+ "&sort=" + sort.value + "&category=" + category_filter.value + "&tag=" + tag_filter.value + "&day_from=" + day_from.value + "&day_to=" + day_to.value + "&price_from=" + price_from.value + "&price_to=" + price_to.value + "&filter_search="+"&notload", true);
+            xmlhttp.open("GET", "index.php?" + "sort_by=" + sortby.value + "&page_filter=" + (i + 1) + "&sort=" + sort.value + "&category=" + category_filter.value + "&tag=" + tag_filter.value + "&day_from=" + day_from.value + "&day_to=" + day_to.value + "&price_from=" + price_from.value + "&price_to=" + price_to.value + "&filter_search=" + "&notload", true);
             xmlhttp.send();
 
-            xmlhttp.onreadystatechange = function() {
+            xmlhttp.onreadystatechange = function () {
                 if (this.readyState == 4 && this.status == 200) {
 
                     document.querySelector("tbody").innerHTML = this.responseText;
                     filterPage()
+                    //delete need to change
+
                     deleBtn()
-                    
+
                 }
             };
 
 
-            })
-        }
+        })
     }
+}
 
-    document.querySelector('#button-addon2').addEventListener('click', searchProduct)
+document.querySelector('#button-addon2').addEventListener('click', searchProduct)

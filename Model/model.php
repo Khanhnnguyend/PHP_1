@@ -105,7 +105,7 @@
         where id= $id";
         $stmt = $model->connection->prepare($model->sql);
         $stmt->execute();
-        echo "da xoa";
+        
     }
 
     public static function findName($f){
@@ -148,11 +148,11 @@
         }
 
         if($obj->category != null){
-            $model->sql .= " categories like '%$obj->category%' ". "and";
+            $model->sql .= " categories = '%_$obj->category _%' ". "and";
         }
 
         if($obj->tagFind != null){
-            $model->sql .= " tags like '%$obj->tagFind%' ". "and";
+            $model->sql .= " tags = '$obj->tagFind' ". "and";
         }
 
         if($obj->day_from != null && $obj->day_to != null){
@@ -160,11 +160,11 @@
         }
 
         if($obj->day_from != null && $obj->day_to == null){
-            $model->sql .= " date > '$obj->day_from' ". "and";
+            $model->sql .= " date >= '$obj->day_from' ". "and";
         }
 
         if($obj->day_to != null && $obj->day_from == null){
-            $model->sql .= " date < '$obj->day_to' ". "and";
+            $model->sql .= " date <= '$obj->day_to' ". "and";
         }
 
         if($obj->price_from != null && $obj->price_to != null){
@@ -185,7 +185,8 @@
         $model->sql = substr($model->sql , 0, -strlen(strrchr($model->sql , ' ')));
 
         $model->sql .=" order by  $obj->sortBy " ."$obj->sort";
-        echo $model->sql;
+       
+        
 
          $stmt = $model->connection->prepare($model->sql);
         $stmt->execute();

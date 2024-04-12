@@ -21,7 +21,7 @@
 </head>
 
 <body>
-<form action="" method="POST" enctype="multipart/form-data" id="form_update_product">
+<form action="" method="POST" enctype="multipart/form-data" id="form_product">
     <div class="container">
       <div class="row">
         <div class="col">
@@ -127,7 +127,7 @@
         </div>
       </div>
 
-      <button type="submit" name="update_product" class="btn btn-primary btn-sm">Update</button>
+      <button type="submit" name="<?php if(isset($product)){ echo "update_product";} else{echo "insert_product";} ?>" class="btn btn-primary btn-sm"><?php if(isset($product)){ echo "Update";} else{echo "ADD PRODUCT";} ?></button>
   </form>
   <p class="form_add_message" style=" color:red;"></p>
 
@@ -156,7 +156,7 @@
 
   <script>
     validator({
-      form: '#form_add_product',
+      form: '#form_product',
       rules: [
         validator.isRequired("input[name=name_product]"),
         validator.isRequired("input[name=price]"),

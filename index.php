@@ -15,34 +15,7 @@
   
  
 
-    $controller = isset($_GET['controller']) == true ? $_GET['controller'] : "index.php";
-	switch($controller){
-		case 'index.php':{
-   
-            if(!isset($_GET['search'])
-            && !isset($_GET['filter_search'])
-            &&!isset($_GET['page'])){
-                $controlAction->productView();
-            }
-			break;
-		}
-
-
-        case 'add_product':{
-            $controlAction->addProductView();
-			break;
-        }
-
-        case 'add_property':{
-            $controlAction->addProperty();
-			break;
-        }
-
-        case 'update_product':{
-            $controlAction->updateProductView();
-			break;
-        }
-    }
+    
 
 
     if(isset($_POST['insert_product']) ) {
@@ -80,15 +53,17 @@
        
     }
 
-    if(isset($_GET['page'])&& !isset($_GET['noneload']) ) {
+    if(isset($_GET['page'])&& !isset($_GET['noneload'])) {
        
         $controlAction->pageLoad();
+       
         
     }
 
     if(isset($_GET['page']) && isset($_GET['noneload'])) {
       
         $controlAction->page();
+       
         
     }
 
@@ -103,6 +78,37 @@
        
        $controlAction->searchLoad();
         
+    }
+
+
+    $controller = isset($_GET['controller']) == true ? $_GET['controller'] : "index.php";
+	switch($controller){
+		case 'index.php':{
+   
+            if(!isset($_GET['search'])
+            && !isset($_GET['filter_search'])
+            &&!isset($_GET['page'])
+            &&!isset($_GET['delete'])){
+                $controlAction->productView();
+            }
+			break;
+		}
+
+
+        case 'add_product':{
+            $controlAction->addProductView();
+			break;
+        }
+
+        case 'add_property':{
+            $controlAction->addProperty();
+			break;
+        }
+
+        case 'update_product':{
+            $controlAction->updateProductView();
+			break;
+        }
     }
     
 ?>

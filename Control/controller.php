@@ -10,8 +10,8 @@ class ControlAction
         $categories = Categories::all();
 
         $productsTotal = Product::all();
-        $page = ceil(count($productsTotal) / 5);
-
+        $take = ceil(count($productsTotal) / 5);
+        $page =1;
         $products = Product::allLimit(5, 1);
         foreach ($products as $product) {
             $arrNewTags = [];
@@ -67,9 +67,13 @@ class ControlAction
         $categories = Categories::all();
         $productsTotal = Product::all();
 
-        $page = ceil(count($productsTotal) / 5);
-        $take = $_GET['page'];
-        $products = Product::allLimit(5, $take);
+        $take = ceil(count($productsTotal) / 5);
+        $page = $_GET['page'];
+        if(!is_numeric($page)){
+            echo"<script> Lỗi </script>";
+            return;
+        }
+        $products = Product::allLimit(5, $page);
         foreach ($products as $product) {
             $arrNewTags = [];
             $arrNewCats = [];
@@ -94,17 +98,20 @@ class ControlAction
             $product->tags = $arrNewTags;
         }
 
-
+        
         include 'View/product.php';
+        
     }
 
     public function searchLoad()
     {
         $tags = Tags::all();
         $categories = Categories::all();
-
+        $val = new Validate();
         $name = $_GET['search'];
         $page_search = $_GET['page_search'];
+
+        $name = $val->enCode($name);
 
         $take = ($page_search - 1) * 5;
         $totalPage = Product::findName($name);
@@ -148,10 +155,6 @@ class ControlAction
         $page = $_GET['page'];
 
         $products = Product::allLimit(5, $page);
-
-
-
-
 
         foreach ($products as $product) {
             $arrNewTags = [];
@@ -255,8 +258,7 @@ class ControlAction
         $gallery = $_FILES['gallery'];
 
 
-
-
+        
         $product = new Product();
 
         $product->product_name = $val->enCode($name_product);
@@ -272,6 +274,11 @@ class ControlAction
         }
         $product->price = $price;
 
+        $pattern = '/^\d{4}-\d{2}-\d{2}$/';
+        if(preg_match($pattern, $date) !=1 && $date !=""){
+            echo "<script> alert('date không hợp lệ ')</script>";
+            return;
+        }
         if ($date > date("Y-m-d")) {
             echo "<script> alert('date không hợp lệ ')</script>";
             return;
@@ -282,12 +289,13 @@ class ControlAction
             $product->date = date("Y-m-d");
         }
 
-        unset($val);
+        
 
 
 
         $product->id = null;
 
+        if ($img['size'] > 0) {
         $filePic = "";
 
         $type = $_FILES['image']['type'];
@@ -297,30 +305,34 @@ class ControlAction
             return;
         }
 
-
-
-        if ($img['size'] > 0) {
             $filePic = $img['name'];
             $product->image = $filePic;
             $filePic = "assets/upload/" . $img['name'];
             move_uploaded_file($img['tmp_name'], $filePic);
         }
 
-
-        $totalTag = [];
+        if(isset($_POST['tags'])){
+            $totalTag = [];
         foreach ($tags as $tag) {
 
-            array_push($totalTag, $tag);
+            array_push($totalTag, $val->enCode($tag));
         }
         $product->tags = json_encode($totalTag);
+        }
 
 
-
+        if(isset($_POST['categories'])){
         $totalCat = [];
         foreach ($categories as $cat) {
-            array_push($totalCat, $cat);
+            array_push($totalCat, $val->enCode($cat));
         }
         $product->categories = json_encode($totalCat);
+
+    }
+
+    unset($val);
+
+    if($_FILES['gallery']['size'][0] != 0){
 
         foreach ($_FILES['gallery']['type'] as $type) {
 
@@ -331,7 +343,7 @@ class ControlAction
             }
         }
 
-
+    }
         $totalGal = [];
 
         $galleries = array_map(function ($gallery1, $gallery2) {
@@ -375,7 +387,7 @@ class ControlAction
 
 
 
-
+        
         $product = new Product();
 
         $product->product_name = $val->enCode($name_product);
@@ -395,6 +407,12 @@ class ControlAction
             echo "<script> alert('date không hợp lệ ')</script>";
             return;
         }
+
+        $pattern = '/^\d{4}-\d{2}-\d{2}$/';
+        if(preg_match($pattern, $date) !=1){
+            echo "<script> alert('date không hợp lệ ')</script>";
+            return;
+        }
         $product->date = $date;
 
         if ($date == "") {
@@ -408,7 +426,7 @@ class ControlAction
         $product->id = $_GET['product_id'];;
 
 
-
+        if ($img['size'] > 0) {
         $type = $_FILES['image']['type'];
         $extensions = array('image/jpeg', 'image/png', 'image/gif');
         if (!in_array($type, $extensions)) {
@@ -417,7 +435,7 @@ class ControlAction
         }
         $filePic = "";
 
-        if ($img['size'] > 0) {
+        
             $filePic = $img['name'];
             $product->image = $filePic;
             $filePic = "assets/upload/" . $img['name'];
@@ -426,23 +444,30 @@ class ControlAction
             $product->image = null;
         }
 
+        
 
-        $totalTag = [];
+        if(isset($_POST['tags'])){
+            $totalTag = [];
         foreach ($tags as $tag) {
 
             array_push($totalTag, $tag);
         }
         $product->tags = json_encode($totalTag);
+        }
 
 
-
+        if(isset($_POST['categories'])){
         $totalCat = [];
         foreach ($categories as $cat) {
             array_push($totalCat, $cat);
         }
         $product->categories = json_encode($totalCat);
 
-
+    }
+    
+    if($_FILES['gallery']['size'][0] != 0){
+        
+    
         foreach ($_FILES['gallery']['type'] as $type) {
 
             $extensions = array('image/jpeg', 'image/png', 'image/gif');
@@ -451,7 +476,8 @@ class ControlAction
                 return;
             }
         }
-
+    }
+   
         $totalGal = [];
 
         $galleries = array_map(function ($gallery1, $gallery2) {
@@ -506,13 +532,26 @@ class ControlAction
         $val = new Validate();
         $page = $_GET["page_search"];
         $findSymbol = $_GET['search'];
+        if(!is_numeric($page)) {
+            echo'<script> alert("Loi") </script>';
+            return;
+        }
 
         $findSymbol = $val->enCode($findSymbol);
 
-        echo $findSymbol;
+      
         unset($val);
+        if($findSymbol == '') {
+            $products = Product::all();
+            
+        }
+        else {
+            $products = Product::findName($findSymbol);
+        }
+        
 
-        $products = Product::findName($findSymbol);
+
+        
 
         $tags = Tags::all();
         $categories = Categories::all();
@@ -613,6 +652,7 @@ class ControlAction
         echo "<input id='total_search' type='hidden' value='";
         echo count($products);
         echo "'>";
+    
     }
     //filter
     public function filterSearch()
@@ -638,14 +678,26 @@ class ControlAction
         $category = $val->enCode($category);
         $tagFind = $val->enCode($tagFind);
 
+        $date = date("Y-m-d");
+       
+        $date1 =  date($day_from);
+        $date2 = date($day_to);
         
+
+        if ( $day_from!="" && $date1 > $date ) {
+            echo  '<p class="err_message_filter">Sai trường thông tin</p>';
+            return;
+        }
+
         
         if ((preg_match($pattern, $day_from) !=1&&$day_from!="" )||
         ( preg_match($pattern, $day_to)!=1 && $day_to != "")) {
+            
             echo '<p class="err_message_filter">Sai trường thông tin</p>';
             return;
         } else {
-            if (strtotime($day_from) && $day_from!="" > strtotime($day_to) && $day_to != "") {
+            if (  $day_from!=""  && $day_to != "" && $date1 > $date2) {
+           
                 echo  '<p class="err_message_filter">Sai trường thông tin</p>';
                 return;
             }
@@ -653,14 +705,17 @@ class ControlAction
 
         if ((is_numeric($price_from)!=1 && $price_from!="" )||
         ( is_numeric($price_to)!=1 && $price_to!= "")) {
+            
             echo '<p class="err_message_filter">Sai trường thông tin</p>';
             return;
         } else {
             if ( $price_from != "" &&  (float)$price_from  > $price_to != ""&& (float)$price_to) {
+                
                 echo '<p class="err_message_filter">Sai trường thông tin</p>';
                 return;
             } 
-            if((float)$price_from <= 0 || (float)$price_to <= 0 ){
+            if( (float)$price_from < 0 || (float)$price_to < 0 ){
+           
                 echo '<p class="err_message_filter">Sai trường thông tin</p>';
                 return;
             }
@@ -711,6 +766,8 @@ class ControlAction
         }
         $start = ($page - 1) * 5;
         $countLoop = 0;
+        //here
+        echo '<p class="page-present" hidden>'; echo $page; echo '</p>';
         foreach ($products as $product) {
 
             if ($countLoop >= $start && $countLoop < $page * 5) {
@@ -782,8 +839,20 @@ class ControlAction
     public function delete()
     {
         $id = $_GET['delete'];
-
-        Product::delete($id);
+     
+        if(is_numeric($id)){
+            if (Product::findID($id) != null) {
+                Product::delete($id);
+                echo 'success';
+            }
+            else{
+                echo "<script> loi </script>"; 
+            }
+        }
+        
+       
+       
+        
     }
 
     public function addTag()
