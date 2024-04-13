@@ -45,7 +45,7 @@ function pagePag(page) {
 
 
 }
-// document.querySelector('.page_1').addEventListener('click',pagePag)
+
 
 function deleBtn() {
     var deleteIcon = document.querySelectorAll('.delete_icon')
@@ -81,53 +81,7 @@ function deleBtn() {
     })
 }
 
-function deleBtnSearch() {
-    var deleteIcon = document.querySelectorAll('.delete_icon')
 
-    deleteIcon.forEach(del => {
-
-        del.addEventListener('click', function (event) {
-
-            console.log("click")
-            var idParent = del.closest('tr').id
-            if (!regex.test(idParent)) {
-
-                return
-            }
-            var xmlhttp = new XMLHttpRequest();
-
-            xmlhttp.open("GET", 'index.php?delete=' + idParent, true);
-            xmlhttp.send();
-            let str = document.querySelector("#search_input").value.trim()
-            let search = str
-
-            xmlhttp.onreadystatechange = function () {
-                if (this.readyState == 4 && this.status == 200) {
-                    if (this.responseText = 'success') {
-                        xmlhttp.open("GET", "index.php?search=" + search + "&page_search=" +
-                            document.querySelector('.page-present').innerText + "&notloadpage", true);
-                        xmlhttp.send();
-
-                        xmlhttp.onreadystatechange = function () {
-                            if (this.readyState == 4 && this.status == 200) {
-
-                                document.querySelector("tbody").innerHTML = this.responseText;
-
-                                pageSearch()
-                                deleBtnSearch()
-                            }
-                        };
-
-
-                    }
-
-
-
-                }
-            };
-        })
-    })
-}
 
 function deleBtnFilter() {
     var deleteIcon = document.querySelectorAll('.delete_icon')
@@ -136,7 +90,7 @@ function deleBtnFilter() {
 
         del.addEventListener('click', function (event) {
 
-            console.log("click")
+          
             var idParent = del.closest('tr').id
             if (!regex.test(idParent)) {
 
@@ -145,26 +99,35 @@ function deleBtnFilter() {
 
             var xmlhttp = new XMLHttpRequest();
 
-            var xmlhttp = new XMLHttpRequest();
+          
 
-            xmlhttp.open("GET", "index.php?" + "sort_by=" + sortby.value
-                + "&page_filter=1" + "&sort=" + sort.value + "&category=" + category_filter.value + "&tag="
-                + tag_filter.value + "&day_from=" + day_from.value + "&day_to=" + day_to.value + "&price_from="
-                + price_from.value + "&price_to=" + price_to.value + "&filter_search=" + "&notload", true);
+            xmlhttp.open("GET", 'index.php?delete=' + idParent, true);
             xmlhttp.send();
+
+            var sortby = document.querySelector('#sort_by')
+            var sort = document.querySelector('#sort')
+            var category_filter = document.querySelector('#category_filter')
+            var tag_filter = document.querySelector('#tag_filter')
+            var day_from = document.querySelector('#day_from')
+            var day_to = document.querySelector('#day_to')
+            var price_from = document.querySelector('#price_from')
+            var price_to = document.querySelector('#price_to')
+            let str = document.querySelector("#search_input").value.trim()
+    let search = str
 
             xmlhttp.onreadystatechange = function () {
                 if (this.readyState == 4 && this.status == 200) {
                     if (this.responseText = 'success') {
                         xmlhttp.open("GET", "index.php?" + "sort_by=" + sortby.value
-                            + "&page_filter=1" 
-                            + "&sort=" + sort.value 
-                            + "&category=" + category_filter.value 
-                            + "&tag="+ tag_filter.value 
-                            + "&day_from=" + day_from.value 
-                            + "&day_to=" + day_to.value 
-                            + "&price_from="+ price_from.value 
-                            + "&price_to=" + price_to.value 
+                            + "&page_filter=" + document.querySelector('.page-present').innerText
+                            + "&search=" + search
+                            + "&sort=" + sort.value
+                            + "&category=" + category_filter.value
+                            + "&tag=" + tag_filter.value
+                            + "&day_from=" + day_from.value
+                            + "&day_to=" + day_to.value
+                            + "&price_from=" + price_from.value
+                            + "&price_to=" + price_to.value
                             + "&filter_search=" + "&notload", true);
                         xmlhttp.send();
 
@@ -184,162 +147,16 @@ function deleBtnFilter() {
                 };
             }
 
-            xmlhttp.onreadystatechange = function () {
-                if (this.readyState == 4 && this.status == 200) {
-                    if (this.responseText = 'success') {
-                        xmlhttp.open("GET", "index.php?search=" + search + "&page_search=" +
-                            document.querySelector('.page-present').innerText + "&notloadpage", true);
-                        xmlhttp.send();
 
-                        xmlhttp.onreadystatechange = function () {
-                            if (this.readyState == 4 && this.status == 200) {
-
-                                document.querySelector("tbody").innerHTML = this.responseText;
-
-                                pageSearch()
-                                deleBtnSearch()
-                            }
-                        };
-
-
-                    }
-
-
-
-                }
-            };
         })
     })
 }
 
 
-
-function searchProduct() {
-    let str = document.querySelector("#search_input").value.trim()
-    let search = str
-
-
-    event.preventDefault();
-    var newState = {
-        page: "index.php"
-    };
-    var newTitle = "Search";
-
-    var newUrl = file + "/" + "index.php?search=" + search + "&page_search=1"
-
-    history.pushState(newState, newTitle, newUrl);
-    document.title = newTitle;
-
-
-    var xmlhttp = new XMLHttpRequest();
-
-    xmlhttp.open("GET", "index.php?search=" + search + "&page_search=1" + "&notloadpage", true);
-    xmlhttp.send();
-
-    xmlhttp.onreadystatechange = function () {
-        if (this.readyState == 4 && this.status == 200) {
-
-            document.querySelector("tbody").innerHTML = this.responseText;
-            pageSearch()
-            deleBtnSearch()
-        }
-    };
-
-
-
-}
-
-
-
-
-function pageSearch() {
-
-    let pageSearchBtn = document.querySelector('.pagination')
-
-    let liPage = pageSearchBtn.querySelectorAll('li')
-
-    for (let i = 0; i < liPage.length; i++) {
-        pageSearchBtn.removeChild(liPage[i])
-
-    }
-
-    let totalPage = document.querySelector('#total_search').value
-
-    totalPage = Math.ceil(totalPage / 5)
-    let totalLi = `<li class="page-item">
-                        <a class="page-link" href="#" aria-label="Previous">
-                            <span aria-hidden="true">&laquo;</span>
-                        </a>
-                    </li>`
-
-    for (let j = 1; j <= totalPage; j++) {
-        totalLi += `<li class="page-item"><a class="page-link page_search${j} page_search" href="">${j}</a></li>`
-    }
-    totalLi += `<li class="page-item">
-                        <a class="page-link" href="#" aria-label="Next">
-                            <span aria-hidden="true">&raquo;</span>
-                        </a>
-                    </li>`
-    pageSearchBtn.innerHTML = totalLi
-
-
-
-
-
-
-    let pageSearchBtnNew = document.querySelectorAll('.page_search')
-
-    var sortby = document.querySelector('#search_input')
-
-
-
-    for (let i = 0; i < pageSearchBtnNew.length; i++) {
-        pageSearchBtnNew[i].addEventListener('click', function (event) {
-
-            document.querySelector('.page-present').innerText = i + 1;
-            let str = document.querySelector("#search_input").value.trim()
-            let search = str;
-            event.preventDefault();
-
-            var newState = {
-                page: "index.php"
-            };
-            var newTitle = "Search";
-
-            var newUrl = file + "/index.php?" + "&search=" + search + "&page_search=" + (i + 1)
-            history.pushState(newState, newTitle, newUrl);
-            document.title = newTitle;
-
-
-            var xmlhttp = new XMLHttpRequest();
-
-            xmlhttp.open("GET", "index.php?" + "&search=" + search + "&page_search=" + (i + 1) + "&notloadpage", true)
-            xmlhttp.send();
-
-            xmlhttp.onreadystatechange = function () {
-                if (this.readyState == 4 && this.status == 200) {
-
-                    document.querySelector("tbody").innerHTML = this.responseText;
-
-                    pageSearch()
-                    deleBtnSearch()
-
-                }
-            };
-
-
-        })
-    }
-}
-
-
-
-
-
 deleBtn()
 
 //filter ajax
-document.querySelector('#btn_filter').addEventListener('click', function (event) {
+var filterSearch = function () {
 
     var sortby = document.querySelector('#sort_by')
     var sort = document.querySelector('#sort')
@@ -349,26 +166,28 @@ document.querySelector('#btn_filter').addEventListener('click', function (event)
     var day_to = document.querySelector('#day_to')
     var price_from = document.querySelector('#price_from')
     var price_to = document.querySelector('#price_to')
+    let str = document.querySelector("#search_input").value.trim()
+    let search = str
 
 
-    event.preventDefault();
-    var newState = {
-        page: "index.php"
-    };
-    var newTitle = "Filter";
 
-    var newUrl = file + "/index.php?" + "&filter_search=" + "&page_filter=1"
-
-    history.pushState(newState, newTitle, newUrl);
-    document.title = newTitle;
 
 
     var xmlhttp = new XMLHttpRequest();
 
-    xmlhttp.open("GET", "index.php?" + "sort_by=" + sortby.value
-        + "&page_filter=1" + "&sort=" + sort.value + "&category=" + category_filter.value + "&tag="
-        + tag_filter.value + "&day_from=" + day_from.value + "&day_to=" + day_to.value + "&price_from="
-        + price_from.value + "&price_to=" + price_to.value + "&filter_search=" + "&notload", true);
+    xmlhttp.open("GET", "index.php?"
+        + "sort_by=" + sortby.value
+        + "&page_filter=1"
+        + "&search=" + search
+        + "&sort=" + sort.value
+        + "&category=" + category_filter.value
+        + "&tag=" + tag_filter.value
+        + "&day_from=" + day_from.value
+        + "&day_to=" + day_to.value
+        + "&price_from=" + price_from.value
+        + "&price_to=" + price_to.value
+        + "&filter_search="
+        + "&notload", true);
     xmlhttp.send();
 
     xmlhttp.onreadystatechange = function () {
@@ -376,17 +195,14 @@ document.querySelector('#btn_filter').addEventListener('click', function (event)
 
             document.querySelector("tbody").innerHTML = this.responseText;
             filterPage()
-            //delete need to change
-
-            deleBtn()
+            deleBtnFilter()
 
         }
     };
 
 
 
-})
-
+}
 
 
 function filterPage() {
@@ -402,29 +218,15 @@ function filterPage() {
     let totalPage = document.querySelector('#total_filter').value
 
     totalPage = Math.ceil(totalPage / 5)
-    let totalLi = `<li class="page-item">
-                        <a class="page-link" href="#" aria-label="Previous">
-                            <span aria-hidden="true">&laquo;</span>
-                        </a>
-                    </li>`
-
+    
+     var totalLi =""
     for (let j = 1; j <= totalPage; j++) {
-        totalLi += `<li class="page-item"><a class="page-link page_filter${j} page_filter" href="">${j}</a></li>`
+        totalLi += `<li class="page-item"><a class="page-link page_filter${j} page_filter" href="#">${j}</a></li>`
     }
-    totalLi += `<li class="page-item">
-                        <a class="page-link" href="#" aria-label="Next">
-                            <span aria-hidden="true">&raquo;</span>
-                        </a>
-                    </li>`
+    if(totalLi != "")
     pageFilerBtn.innerHTML = totalLi
 
-
-
-
-
-
     let pageBtnNew = document.querySelectorAll('.page_filter')
-
     var sortby = document.querySelector('#sort_by')
     var sort = document.querySelector('#sort')
     var category_filter = document.querySelector('#category_filter')
@@ -433,36 +235,40 @@ function filterPage() {
     var day_to = document.querySelector('#day_to')
     var price_from = document.querySelector('#price_from')
     var price_to = document.querySelector('#price_to')
+    let str = document.querySelector("#search_input").value.trim()
+    let search = str
 
 
     for (let i = 0; i < pageBtnNew.length; i++) {
         pageBtnNew[i].addEventListener('click', function (event) {
+           
+            document.querySelector('.page-present').innerText = i + 1;
 
-
-            event.preventDefault();
-            var newState = {
-                page: "index.php"
-            };
-            var newTitle = "Filter";
-
-            var newUrl = file + "/index.php?" + "&filter_search=" + "&page_filter=" + (i + 1)
-            history.pushState(newState, newTitle, newUrl);
-            document.title = newTitle;
-
+            console.log("chạy btn" +document.querySelector('.page-present').innerText);
 
             var xmlhttp = new XMLHttpRequest();
 
-            xmlhttp.open("GET", "index.php?" + "sort_by=" + sortby.value + "&page_filter=" + (i + 1) + "&sort=" + sort.value + "&category=" + category_filter.value + "&tag=" + tag_filter.value + "&day_from=" + day_from.value + "&day_to=" + day_to.value + "&price_from=" + price_from.value + "&price_to=" + price_to.value + "&filter_search=" + "&notload", true);
+            xmlhttp.open("GET", "index.php?"
+                + "sort_by=" + sortby.value
+                + "&page_filter=" + (i + 1)
+                + "&search=" + search
+                + "&sort=" + sort.value
+                + "&category=" + category_filter.value
+                + "&tag=" + tag_filter.value
+                + "&day_from=" + day_from.value
+                + "&day_to=" + day_to.value
+                + "&price_from=" + price_from.value
+                + "&price_to=" + price_to.value
+                + "&filter_search", true);
             xmlhttp.send();
 
             xmlhttp.onreadystatechange = function () {
                 if (this.readyState == 4 && this.status == 200) {
-
+                 
                     document.querySelector("tbody").innerHTML = this.responseText;
+                 
                     filterPage()
-                    //delete need to change
-
-                    deleBtn()
+                    deleBtnFilter()
 
                 }
             };
@@ -472,4 +278,5 @@ function filterPage() {
     }
 }
 
-document.querySelector('#button-addon2').addEventListener('click', searchProduct)
+document.querySelector('#btn_filter').addEventListener('click', filterSearch)
+document.querySelector('#button-addon2').addEventListener('click', filterSearch)

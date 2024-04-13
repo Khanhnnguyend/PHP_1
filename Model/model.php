@@ -2,7 +2,7 @@
     class DB_Config{
          public $connection;
         public $severName = "localhost"; 
-        public $database ="db_khanh";
+        public $database ="db_khanh1";
         public function __construct(){
             
             $this->connection = new PDO("mysql:host=$this->severName; dbname=$this->database;charset=utf8", 'root', '');
@@ -22,7 +22,7 @@
         $model = new static();
         $page = (int)$num* ((int)$page -1);
        
-        $sql = "select * from $model->tableName limit $num offset $page";
+        $sql = "select * from $model->tableName order by date asc limit $num offset $page ";
         $stmt = $model->connection->prepare($sql);
         $stmt->execute();
         $result = $stmt->fetchAll(PDO::FETCH_CLASS, get_class($model));
@@ -137,7 +137,8 @@
         $obj = json_decode($object,false);
         $model = new static();
         $model->sql = "select * from $model->tableName  ";
-        if($obj->category != "" ||
+        if($obj->search != "" ||
+            $obj->category != "" ||
             $obj->tagFind != ""||
             $obj->day_from != ""||
             $obj->day_to != ""||
@@ -145,6 +146,9 @@
             $obj->price_to != ""
         ){
             $model->sql .= " where ";
+        }
+        if($obj->search != null){
+            $model->sql .= " product_name like '%$obj->search%' ". "and";
         }
 
         if($obj->category != null){
@@ -188,7 +192,7 @@
         $model->sql .=" order by  $obj->sortBy " ."$obj->sort";
        
         
-        
+      
          $stmt = $model->connection->prepare($model->sql);
         $stmt->execute();
         $result = $stmt->fetchAll(PDO::FETCH_CLASS, get_class($model));

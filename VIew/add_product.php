@@ -62,10 +62,10 @@
           </div>
           <div class="mb-4 tag-select">
             <label for="" class="form-label">Tags</label>
-            <select multiple name="tags[]" class="form-select <?php if(!isset($product)) echo 'invalid' ?>" id="multiple-select-field-tag" data-placeholder="Tags">
+            <select multiple name="tags[]" class="form-select" id="multiple-select-field-tag" data-placeholder="Tags">
 
               <?php foreach ($tags as $tag): ?>
-                <option <?php if(isset($product)) foreach (json_decode($product->tags) as $id_tag) {
+                <option <?php if(isset($product)&& $product->tags!=null) foreach (json_decode($product->tags) as $id_tag) {
                   if ($id_tag == $tag->id) {
                     echo "selected";
                   }
@@ -80,10 +80,10 @@
 
           <div class="mb-4 cat-select">
             <label for="" class="form-label">Categories</label>
-            <select class="form-control <?php if(!isset($product)) echo 'invalid' ?>" name="categories[]" id="multiple-select-field-cat" data-placeholder="category"
+            <select class="form-control" name="categories[]" id="multiple-select-field-cat" data-placeholder="category"
               multiple>
               <?php foreach ($categories as $cat): ?>
-                <option <?php if(isset($product)) foreach (json_decode($product->categories) as $id_cat) {
+                <option <?php if(isset($product) && $product->categories!=null) foreach (json_decode($product->categories) as $id_cat) {
                   if ($id_cat == $cat->id) {
                     echo "selected";
                   }
@@ -160,8 +160,7 @@
       rules: [
         validator.isRequired("input[name=name_product]"),
         validator.isRequired("input[name=price]"),
-        validator.isChooseOne("select[name=tags]"),
-        validator.isChooseOne("select[name=categories]"),
+        
         validator.isPositiveNumber("input[name=price]"),
         validator.isRequired("input[name=sku]"),
         validator.isDatePositive("input[name=date]"),

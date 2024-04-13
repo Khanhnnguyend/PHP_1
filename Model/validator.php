@@ -7,14 +7,6 @@ class Validate {
         return $code;
     }
 
-    public function checkPositiveNumber($number) {
-        
-    }
-
-    public function checkImage($image,$input) {
-        
-    }
-
 }
 
 ?>

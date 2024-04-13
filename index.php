@@ -12,12 +12,6 @@
     $GLOBALS['linkpath'] = "http://".basename($_SERVER['HTTP_HOST']).$root;
     
    
-  
- 
-
-    
-
-
     if(isset($_POST['insert_product']) ) {
         $controlAction->addProduct();
     }
@@ -26,10 +20,6 @@
         $controlAction->updateProduct();
     }
 
-    if(isset($_GET['search']) && isset($_GET['notloadpage']) )  {
-        $controlAction->search();
-       
-    }
 
     if(isset($_GET['delete']) ) {
         
@@ -47,10 +37,11 @@
         
     }
 
-    if(isset($_GET['filter_search']) && isset($_GET['notload'])
-    ) {
+    if(isset($_GET['filter_search']) )
+    {
+
         $controlAction->filterSearch();
-       
+     
     }
 
     if(isset($_GET['page'])&& !isset($_GET['noneload'])) {
@@ -67,18 +58,8 @@
         
     }
 
-    if(isset($_GET['filter_search'])&& !isset($_GET['notload']) ) {
-       
-        header('location:index.php?page=1');
-        
-    }
+    
 
-    if(isset($_GET['search'])&& !isset($_GET['notloadpage']) ) {
-       
-       
-       $controlAction->searchLoad();
-        
-    }
 
 
     $controller = isset($_GET['controller']) == true ? $_GET['controller'] : "index.php";
