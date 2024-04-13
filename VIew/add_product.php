@@ -107,7 +107,7 @@
               </div>
               <div class="upload__img-wrap">
                 <?php $count =0;?>
-              <?php if(isset($product)) foreach (json_decode($product->gallery) as $gal):?>
+              <?php if(isset($product) && json_decode($product->gallery)[0]!="") foreach (json_decode($product->gallery) as $gal):?>
                 
                 <div class="upload__img-box">
                   <input type="hidden" value="<?php echo $gal ?>" name="gallery_old[]">

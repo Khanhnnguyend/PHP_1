@@ -16,7 +16,7 @@ class ControlAction
         foreach ($products as $product) {
             $arrNewTags = [];
             $arrNewCats = [];
-            if($product->tags !=""){
+            if($product->tags !="" && is_array(json_decode($product->tags))){
                 foreach (json_decode($product->tags) as $tag) {
 
                     $nameTag = Tags::findID($tag);
@@ -27,7 +27,7 @@ class ControlAction
                 }
             }
             
-            if($product->categories !=""){
+            if($product->categories !=""  && is_array(json_decode($product->categories))){
             foreach (json_decode($product->categories) as $cat) {
 
                 $nameCat = Categories::findID($cat);
@@ -59,7 +59,8 @@ class ControlAction
     {
         $id = $_GET['product_id'];
        if(!is_numeric($id)){
-        return;
+        header('location:index.php');
+        
        }
         
         $categories = Categories::all();
@@ -85,7 +86,7 @@ class ControlAction
         foreach ($products as $product) {
             $arrNewTags = [];
             $arrNewCats = [];
-            if($product->tags !=""){
+            if($product->tags !="" && is_array(json_decode($product->tags))){
                 foreach (json_decode($product->tags) as $tag) {
 
                     $nameTag = Tags::findID($tag);
@@ -96,7 +97,7 @@ class ControlAction
                 }
             }
             
-            if($product->categories !=""){
+            if($product->categories !=""  && is_array(json_decode($product->categories))){
             foreach (json_decode($product->categories) as $cat) {
 
                 $nameCat = Categories::findID($cat);
@@ -127,7 +128,7 @@ class ControlAction
         foreach ($products as $product) {
             $arrNewTags = [];
             $arrNewCats = [];
-            if($product->tags !=""){
+            if($product->tags !="" && is_array(json_decode($product->tags))){
                 foreach (json_decode($product->tags) as $tag) {
 
                     $nameTag = Tags::findID($tag);
@@ -138,7 +139,7 @@ class ControlAction
                 }
             }
             
-            if($product->categories !=""){
+            if($product->categories !="" && is_array(json_decode($product->categories))) {
             foreach (json_decode($product->categories) as $cat) {
 
                 $nameCat = Categories::findID($cat);
@@ -206,7 +207,7 @@ class ControlAction
 
 
     </tr>
-    ";;
+    ";
         }
     }
 

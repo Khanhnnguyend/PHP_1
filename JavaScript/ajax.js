@@ -220,9 +220,12 @@ function filterPage() {
     totalPage = Math.ceil(totalPage / 5)
     
      var totalLi =""
-    for (let j = 1; j <= totalPage; j++) {
+
+     if(totalPage>1)
+    {for (let j = 1; j <= totalPage; j++) {
         totalLi += `<li class="page-item"><a class="page-link page_filter${j} page_filter" href="#">${j}</a></li>`
-    }
+    }}
+    
     if(totalLi != "")
     pageFilerBtn.innerHTML = totalLi
 
@@ -243,8 +246,6 @@ function filterPage() {
         pageBtnNew[i].addEventListener('click', function (event) {
            
             document.querySelector('.page-present').innerText = i + 1;
-
-            console.log("chạy btn" +document.querySelector('.page-present').innerText);
 
             var xmlhttp = new XMLHttpRequest();
 

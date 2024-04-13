@@ -216,11 +216,8 @@
     <script> var file = "<?php echo $GLOBALS['root'] ?>"; </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" 
     integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-    
     <script src="./JavaScript/ajax.js"></script>
-    <script src="./JavaScript/validator.js"></script>
-    <script src="./JavaScript/search.js"></script>
-    <script src="./JavaScript/filterValidate.js"></script>
+    <script src="./JavaScript/validator.js"></script>  
     <link rel="stylesheet" href="./CSS/product.css">
 </body>
 

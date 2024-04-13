@@ -7,45 +7,6 @@ let submitBtn =document.querySelector('button[name=insert_product]')
     }
   })
 
-  let tagBlock  =document.querySelector('.tag-select')
-  let selectTag =document.querySelector('#multiple-select-field-tag')
-  let spanSelect =tagBlock.querySelector('input')
-  let messageTag=tagBlock.querySelector('.form-message')
-
-  
-  spanSelect.addEventListener("blur", function(){
-    
-    let tagSelect =tagBlock.querySelector('.select2-selection__choice')
-    if(tagSelect){
-      messageTag.innerText = ""
-      selectTag.classList.remove('invalid')
-    }
-    else 
-    {
-      messageTag.innerText = "Vui lòng chọn Tags"
-      selectTag.classList.add('invalid')
-    }
-  })
-
-
-  let catBlock  =document.querySelector('.cat-select')
-  let selectCat =document.querySelector('#multiple-select-field-cat')
-  let spanCatSelect =catBlock.querySelector('input')
-  let messageCat=catBlock.querySelector('.form-message')
-
-  spanCatSelect.addEventListener("blur", function(){
-    
-    let catSelect =catBlock.querySelector('.select2-selection__choice')
-    if(catSelect){
-      messageCat.innerText = ""
-      selectCat.classList.remove('invalid')
-    }
-    else 
-    {
-      messageCat.innerText = "Vui lòng chọn Categories"
-      selectCat.classList.add('invalid')
-    }
-  })
 
   const today = new Date();
 const yyyy = today.getFullYear();
