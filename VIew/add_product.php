@@ -65,7 +65,7 @@
             <select multiple name="tags[]" class="form-select" id="multiple-select-field-tag" data-placeholder="Tags">
 
               <?php foreach ($tags as $tag): ?>
-                <option <?php if(isset($product)&& $product->tags!=null) foreach (json_decode($product->tags) as $id_tag) {
+                <option <?php if(isset($product)&& is_array(json_decode($product->tags))&& $product->tags!=null) foreach (json_decode($product->tags) as $id_tag) {
                   if ($id_tag == $tag->id) {
                     echo "selected";
                   }
@@ -107,16 +107,16 @@
               </div>
               <div class="upload__img-wrap">
                 <?php $count =0;?>
-              <?php if(isset($product) && json_decode($product->gallery)[0]!="") foreach (json_decode($product->gallery) as $gal):?>
+              <?php if(isset($product) && $product->gallery != null && json_decode($product->gallery)[0]!="" ) {foreach (json_decode($product->gallery) as $gal):?>
                 
                 <div class="upload__img-box">
                   <input type="hidden" value="<?php echo $gal ?>" name="gallery_old[]">
-                  <div style='background-image: url("./assets/upload/<?php echo $gal ?>")' data-number="<?php echo $count?>" data-file="<?php echo $gal?>" class="img-bg">
+                  <div style='background-image: url("<?php echo $gal ?>")' data-number="<?php echo $count?>" data-file="<?php echo $gal?>" class="img-bg">
                     <div class="upload__img-close"></div>
                   </div>
                 </div>
                 <?php $count++;?>
-<?php endforeach?>
+<?php endforeach;}?>
 
 
 

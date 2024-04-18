@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th4 11, 2024 lúc 05:03 AM
+-- Thời gian đã tạo: Th4 18, 2024 lúc 03:09 AM
 -- Phiên bản máy phục vụ: 10.4.32-MariaDB
 -- Phiên bản PHP: 8.2.12
 
@@ -42,9 +42,7 @@ INSERT INTO `category` (`id`, `cat_name`, `description`) VALUES
 (9, 'Giao Thông', 'g'),
 (10, 'Điện tử', 'a'),
 (11, 'Giáo dục', 'a'),
-(12, '&amp; &#039; &gt; &quot;&gt; &#039;/&gt; &quot;/&g', 'dau'),
-(13, '&#039; &quot; &#039;&gt; &quot;&gt; &#039;/&gt; &q', '&#039; &quot; &#039;&gt; &quot;&gt; &#039;/&gt; &quot;/&gt;'),
-(14, '&#039; &quot; &#039;&gt; &quot;&gt; &#039;/&gt; &quot;/&gt;', '&#039; &quot; &#039;&gt; &quot;&gt; &#039;/&gt; &quot;/&gt;');
+(15, 'Plugins', '');
 
 -- --------------------------------------------------------
 
@@ -59,32 +57,56 @@ CREATE TABLE `product` (
   `price` decimal(10,0) NOT NULL,
   `image` text NOT NULL,
   `gallery` text NOT NULL,
-  `categories` text NOT NULL,
-  `tags` text NOT NULL,
-  `date` date NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  `date` char(10) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ROW_FORMAT=DYNAMIC;
 
 --
 -- Đang đổ dữ liệu cho bảng `product`
 --
 
-INSERT INTO `product` (`id`, `product_name`, `sku`, `price`, `image`, `gallery`, `categories`, `tags`, `date`) VALUES
-(219, 'JavaScript &quot; &gt;', 'JavaScript', 1234, '123.png', '[\"123.png\",\"w.jpg\",\"b5b14dd5859d218f7da810c936733d76.jpg\"]', '[\"9\",\"11\"]', '[\"18\",\"21\"]', '2024-04-11'),
-(220, 'PHP', 'qwe', 123, '123.png', '[\"w.jpg\",\"b5b14dd5859d218f7da810c936733d76.jpg\"]', '[\"11\"]', '[\"18\"]', '2024-04-09'),
-(221, 'Laptop', 'lp', 343, 'w.jpg', '[\"w.jpg\",\"b5b14dd5859d218f7da810c936733d76.jpg\",\"123.png\"]', '[\"10\"]', '[\"17\"]', '2024-04-21'),
-(222, 'C', '123', 64654, '123.png', '[\"w.jpg\",\"b5b14dd5859d218f7da810c936733d76.jpg\",\"123.png\"]', '[\"8\"]', '[\"19\"]', '2024-04-09'),
-(223, 'Golang', '123', 3242, '123.png', '[\"b5b14dd5859d218f7da810c936733d76.jpg\"]', '[\"8\"]', '[\"20\"]', '2024-04-05'),
-(224, 'T', 'weq', 12333, '123.png', '[\"123.png\"]', '[\"9\"]', '[\"18\"]', '2024-04-09'),
-(225, 'T13', '123', 2342, '123.png', '[\"w.jpg\",\"b5b14dd5859d218f7da810c936733d76.jpg\",\"123.png\"]', '[\"11\"]', '[\"18\"]', '2024-04-09'),
-(228, 'T4', '123', 123, '123.png', '[\"b5b14dd5859d218f7da810c936733d76.jpg\"]', '[\"11\"]', '[\"18\"]', '2024-04-09'),
-(229, 'T6', '231', 12, 'b5b14dd5859d218f7da810c936733d76.jpg', '[\"w.jpg\"]', '[\"11\"]', '[\"18\"]', '2024-04-09'),
-(230, 'T5', '123', 123, '123.png', '[\"b5b14dd5859d218f7da810c936733d76.jpg\"]', '[\"11\"]', '[\"19\"]', '2024-04-09'),
-(240, 'qwe', 'qwe', 123, '123.png', '[\"123.png\",\"eq.jpg\"]', '[\"9\"]', '[\"18\"]', '2024-04-10'),
-(241, 'qwe', 'qwe', 123, '123.png', '[\"123.png\",\"eq.jpg\"]', '[\"9\"]', '[\"18\"]', '2024-04-10'),
-(242, 'T&#039;3', '123', 12321, '123.png', '[\"123.png\"]', '[\"10\"]', '[\"19\"]', '2024-04-09'),
-(243, 'T&#039;&quot;9', 'q', 1123, '123.png', '[\"w.jpg\"]', '[\"11\"]', '[\"17\"]', '2024-04-04'),
-(245, 'T&#039;&#039;&#039;7', '123', 12342, '', '[\"123.png\"]', '[\"9\"]', '[\"18\"]', '2024-04-11'),
-(246, 'T&#039;&#039;2', '123', 123, '123.png', '[\"123.png\"]', '[\"10\"]', '[\"18\"]', '2024-04-11');
+INSERT INTO `product` (`id`, `product_name`, `sku`, `price`, `image`, `gallery`, `date`) VALUES
+(376, 'T1', '123', 123, '', '', '2024-04-17'),
+(377, 'T2', '123', 123, '', '', '2024-04-17');
+
+-- --------------------------------------------------------
+
+--
+-- Cấu trúc bảng cho bảng `product_fk_cat`
+--
+
+CREATE TABLE `product_fk_cat` (
+  `id` int(11) NOT NULL,
+  `product_id` int(11) NOT NULL,
+  `id_cat` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `product_fk_cat`
+--
+
+INSERT INTO `product_fk_cat` (`id`, `product_id`, `id_cat`) VALUES
+(66, 376, 9),
+(67, 377, 11);
+
+-- --------------------------------------------------------
+
+--
+-- Cấu trúc bảng cho bảng `product_fk_tag`
+--
+
+CREATE TABLE `product_fk_tag` (
+  `id` int(11) NOT NULL,
+  `id_product` int(11) NOT NULL,
+  `id_tag` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `product_fk_tag`
+--
+
+INSERT INTO `product_fk_tag` (`id`, `id_product`, `id_tag`) VALUES
+(35, 376, 18),
+(36, 377, 18);
 
 -- --------------------------------------------------------
 
@@ -108,10 +130,7 @@ INSERT INTO `tags` (`id`, `tag_name`, `description`) VALUES
 (19, 'giaothong', 'g'),
 (20, 'phuongtien', 't'),
 (21, 'giaoduc', 'g'),
-(22, 'chiase', 'cs'),
-(23, 'chia&#039;doi', 'dd&quot;/&gt;'),
-(24, '&#039; &quot; &#039;', '&#039; &quot; &#039;&gt; &quot;&gt; &#039;/&gt; &quot;/&gt;'),
-(25, '&#039; &quot; &#039;&gt; &quot;&gt; &#039;/&gt; &quot;/&gt;', '&#039; &quot; &#039;&gt; &quot;&gt; &#039;/&gt; &quot;/&gt;');
+(22, 'chiase', 'cs');
 
 --
 -- Chỉ mục cho các bảng đã đổ
@@ -130,6 +149,18 @@ ALTER TABLE `product`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Chỉ mục cho bảng `product_fk_cat`
+--
+ALTER TABLE `product_fk_cat`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Chỉ mục cho bảng `product_fk_tag`
+--
+ALTER TABLE `product_fk_tag`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Chỉ mục cho bảng `tags`
 --
 ALTER TABLE `tags`
@@ -143,19 +174,31 @@ ALTER TABLE `tags`
 -- AUTO_INCREMENT cho bảng `category`
 --
 ALTER TABLE `category`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT cho bảng `product`
 --
 ALTER TABLE `product`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=247;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=378;
+
+--
+-- AUTO_INCREMENT cho bảng `product_fk_cat`
+--
+ALTER TABLE `product_fk_cat`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=68;
+
+--
+-- AUTO_INCREMENT cho bảng `product_fk_tag`
+--
+ALTER TABLE `product_fk_tag`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
 
 --
 -- AUTO_INCREMENT cho bảng `tags`
 --
 ALTER TABLE `tags`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

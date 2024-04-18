@@ -1,16 +1,24 @@
 <?php 
-    require'Model/model.php';
-    require'Model/product.php';
-    require'Model/category.php';
+    require 'Model/model.php';
+    require 'Model/product.php';
+    require 'Model/category.php';
     require 'Model/tags.php';
+    require 'Model/fk_cat.php';
+    require 'Model/fk_tag.php';
     require 'Control/controller.php';
 
     $controlAction = new ControlAction();
+
+    
+
     $root = $_SERVER['PHP_SELF'];
     $root= str_replace('/index.php', '', $root);
     $GLOBALS['root'] =$root;
     $GLOBALS['linkpath'] = "http://".basename($_SERVER['HTTP_HOST']).$root;
     
+    // add product
+    //update
+    //filter
    
     if(isset($_POST['insert_product']) ) {
         $controlAction->addProduct();
@@ -70,6 +78,7 @@
             && !isset($_GET['filter_search'])
             &&!isset($_GET['page'])
             &&!isset($_GET['delete'])){
+                var_dump( $controlAction->connection);
                 $controlAction->productView();
             }
 			break;

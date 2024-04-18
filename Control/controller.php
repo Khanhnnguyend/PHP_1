@@ -1,44 +1,39 @@
 <?php
 require_once("Model/validator.php");
 
+
+
 class ControlAction
 {
+    public $severName;
+public $database;
+public $connection;
+
+
+public function __construct(){
+     $this->severName = "localhost";
+ $this->database = "db_khanh";
+$this->connection = new PDO("mysql:host=$this->severName; dbname=$this->database;charset=utf8", 'root', '');
+
+}
+    
 
     public function productView()
     {
-        $tags = Tags::all();
-        $categories = Categories::all();
+        
+        $tags = Tags::all($this->connection);
+        $categories = Categories::all($this->connection);
 
-        $productsTotal = Product::all();
+        $productsTotal = Product::all($this->connection);
         $take = ceil(count($productsTotal) / 5);
         $page =1;
-        $products = Product::allLimit(5, 1);
+        $products = Product::allLimit($this->connection,5, 1);
         foreach ($products as $product) {
-            $arrNewTags = [];
-            $arrNewCats = [];
-            if($product->tags !="" && is_array(json_decode($product->tags))){
-                foreach (json_decode($product->tags) as $tag) {
-
-                    $nameTag = Tags::findID($tag);
-    
-                    if ($nameTag) {
-                        array_push($arrNewTags, $nameTag->tag_name);
-                    }
-                }
-            }
+            $product->tags = [];
+            $product->cat = [];
+           
             
-            if($product->categories !=""  && is_array(json_decode($product->categories))){
-            foreach (json_decode($product->categories) as $cat) {
-
-                $nameCat = Categories::findID($cat);
-
-                if ($nameCat) {
-                    array_push($arrNewCats, $nameCat->cat_name);
-                }
-            }
-        }
-            $product->categories = $arrNewCats;
-            $product->tags = $arrNewTags;
+            
         }
 
 
@@ -49,8 +44,8 @@ class ControlAction
 
     public function addProductView()
     {
-        $categories = Categories::all();
-        $tags = Tags::all();
+        $categories = Categories::all($this->connection);
+        $tags = Tags::all($this->connection);
 
         include 'View/add_product.php';
     }
@@ -63,18 +58,18 @@ class ControlAction
         
        }
         
-        $categories = Categories::all();
-        $tags = Tags::all();
-        $product = Product::findID($id);
+        $categories = Categories::all($this->connection);
+        $tags = Tags::all($this->connection);
+        $product = Product::findID($this->connection,$id);
 
         include 'View/add_product.php';
     }
 
     public function pageLoad()
     {
-        $tags = Tags::all();
-        $categories = Categories::all();
-        $productsTotal = Product::all();
+        $tags = Tags::all($this->connection);
+        $categories = Categories::all($this->connection);
+        $productsTotal = Product::all($this->connection);
 
         $take = ceil(count($productsTotal) / 5);
         $page = $_GET['page'];
@@ -82,33 +77,9 @@ class ControlAction
             echo"<script> Lỗi </script>";
             return;
         }
-        $products = Product::allLimit(5, $page);
+        $products = Product::allLimit($this->connection,5, $page);
         foreach ($products as $product) {
-            $arrNewTags = [];
-            $arrNewCats = [];
-            if($product->tags !="" && is_array(json_decode($product->tags))){
-                foreach (json_decode($product->tags) as $tag) {
-
-                    $nameTag = Tags::findID($tag);
-    
-                    if ($nameTag) {
-                        array_push($arrNewTags, $nameTag->tag_name);
-                    }
-                }
-            }
-            
-            if($product->categories !=""  && is_array(json_decode($product->categories))){
-            foreach (json_decode($product->categories) as $cat) {
-
-                $nameCat = Categories::findID($cat);
-
-                if ($nameCat) {
-                    array_push($arrNewCats, $nameCat->cat_name);
-                }
-            }
-        }
-            $product->categories = $arrNewCats;
-            $product->tags = $arrNewTags;
+            //tag cat
         }
 
         
@@ -123,56 +94,37 @@ class ControlAction
 
         $page = $_GET['page'];
 
-        $products = Product::allLimit(5, $page);
+        $products = Product::allLimit($this->connection,5, $page);
 
         foreach ($products as $product) {
-            $arrNewTags = [];
-            $arrNewCats = [];
-            if($product->tags !="" && is_array(json_decode($product->tags))){
-                foreach (json_decode($product->tags) as $tag) {
-
-                    $nameTag = Tags::findID($tag);
-    
-                    if ($nameTag) {
-                        array_push($arrNewTags, $nameTag->tag_name);
-                    }
-                }
-            }
-            
-            if($product->categories !="" && is_array(json_decode($product->categories))) {
-            foreach (json_decode($product->categories) as $cat) {
-
-                $nameCat = Categories::findID($cat);
-
-                if ($nameCat) {
-                    array_push($arrNewCats, $nameCat->cat_name);
-                }
-            }
-        }
-            $product->categories = $arrNewCats;
-            $product->tags = $arrNewTags;
+           // tag cat
         }
 
         foreach ($products as $product) {
             echo "
         <tr id='$product->id'>
-        <td scope='col'> $product->date </td>
-        <td scope='col'> $product->product_name </td>
-        <td scope='col'> $product->sku </td>
-        <td scope='col'> $product->price </td>
+        <td scope='col'>$product->date</td>
+        <td scope='col'>$product->product_name</td>
+        <td scope='col'>$product->sku</td>
+        <td scope='col'>";if($product->price>0){ echo$product->price;} echo"</td>
         <td scope='col'>
             <img style='max-width: 80px;' src=";
-            echo $GLOBALS['linkpath'];
-            echo "/assets/upload/$product->image alt=' '>
+        
+            echo "$product->image alt=' '>
         </td>
         <td scope='col'>";
+        if (
+            is_array(json_decode($product->gallery))
+            && $product->gallery != null
+        ) {
             foreach (json_decode($product->gallery) as $gal) {
                 echo "<img style='max-width: 40px;' src=";
-                echo $GLOBALS['linkpath'];
-                echo "/assets/upload/$gal alt=' '>
+           
+                echo "$gal alt=' '>
                                 
                            ";
             }
+        }
             echo " </td> <td scope='col'>";
             foreach ($product->categories as $key => $cat) {
 
@@ -259,15 +211,29 @@ class ControlAction
         }
         $product->price = $price;
 
-        $pattern = '/^\d{4}-\d{2}-\d{2}$/';
-        if(preg_match($pattern, $date) !=1 && $date !=""){
+        $monthYear =  '/^\d{4}-\d{2}$/';
+        $dayMonthYear = '/^\d{4}-\d{2}-\d{2}$/';
+        if(preg_match($dayMonthYear, $date) !=1 && $date !=""){
             echo "<script> alert('date không hợp lệ ')</script>";
             return;
         }
-        if ($date > date("Y-m-d")) {
-            echo "<script> alert('date không hợp lệ ')</script>";
-            return;
+        if(preg_match($dayMonthYear, $date) ==1){
+            if ($date > date("Y-m-d")) {
+                echo "<script> alert('date không hợp lệ ')</script>";
+                return;
+            }
         }
+
+        if(preg_match($monthYear, $date) ==1){
+            if ($date > date("Y-m")) {
+                echo "<script> alert('date không hợp lệ ')</script>";
+                return;
+            }
+        }
+
+
+
+
         $product->date = $date;
 
         if ($date == "") {
@@ -291,41 +257,24 @@ class ControlAction
         }
 
             $filePic = $img['name'];
+            $filePic = "./assets/upload/" . $img['name'];
             $product->image = $filePic;
-            $filePic = "assets/upload/" . $img['name'];
             move_uploaded_file($img['tmp_name'], $filePic);
         }else{
             $product->image = null;
         }
 
-        if(isset($_POST['tags'])){
-            $totalTag = [];
-        foreach ($tags as $tag) {
-
-            array_push($totalTag, $val->enCode($tag));
-        }
-        $product->tags = json_encode($totalTag);
-        }
-        else {
-            $product->tags = null;
-        }
+        
+        
+        
 
 
-        if(isset($_POST['categories'])){
-        $totalCat = [];
-        foreach ($categories as $cat) {
-            array_push($totalCat, $val->enCode($cat));
-        }
-        $product->categories = json_encode($totalCat);
-
-    }
-    else {
-        $product->categories = null;
-    }
+        
+   
 
     unset($val);
 
-    if($_FILES['gallery']['size'][0] != 0){
+    if($_FILES['gallery']['size'][0] > 0){
 
         foreach ($_FILES['gallery']['type'] as $type) {
 
@@ -336,7 +285,7 @@ class ControlAction
             }
         }
 
-    }
+    
         $totalGal = [];
 
         $galleries = array_map(function ($gallery1, $gallery2) {
@@ -345,21 +294,52 @@ class ControlAction
             move_uploaded_file($gallery2, $filePic);
 
 
-            return $gallery1;
+            return $filePic;
         }, $gallery['name'], $gallery['tmp_name']);
 
         foreach ($galleries as $gal) {
             array_push($totalGal, $gal);
         }
-
         $product->gallery = json_encode($totalGal);
+    }
+    else {
+        $product->gallery = null;
+    }
+
+        
 
 
-        $product->insert();
+        $product->insert($this->connection);
+        $productID =  $product->getLastID($this->connection);
+
+        if(isset($_POST['tags'])){
+            
+            foreach ($tags as $tag) {
+    
+                $tagfk = new fk_Tags();
+                $tagfk->id_product = $productID;
+                $tagfk->id_tag = $tag;
+                $tagfk->id = null;
+                $tagfk->insert($this->connection);
+            }
+        }
+       
+
+            if(isset($_POST['categories'])){
+             
+                foreach ($categories as $cat) {
+                    $catfk = new fk_Cat();
+                $catfk->product_id = $productID;
+                $catfk->id_cat = $cat;
+                $catfk->id = null;
+                $catfk->insert($this->connection);
+                }
+                
+        
+            }
 
 
-
-        header('location:index.php?page=1');
+       // header('location:index.php?page=1');
         
     }
 
@@ -437,8 +417,8 @@ class ControlAction
         
         
         $filePic = $img['name'];
+        $filePic = "./assets/upload/" . $img['name'];
         $product->image = $filePic;
-        $filePic = "assets/upload/" . $img['name'];
         move_uploaded_file($img['tmp_name'], $filePic);
     } else {
         $product->image = null;
@@ -502,7 +482,7 @@ class ControlAction
 
 
         foreach ($galleries as $gal) {
-            array_push($totalGal, $gal);
+            array_push($totalGal, "./assets/upload/". $gal);
         }
 
 
@@ -618,11 +598,11 @@ class ControlAction
 
         $filterjson = json_encode($filterArr);
 
-        $products = Product::filter($filterjson);
+        $products = Product::filter($this->connection,$filterjson);
       
 
-        $tags = Tags::all();
-        $categories = Categories::all();
+        $tags = Tags::all($this->connection);
+        $categories = Categories::all($this->connection);
 
 
         foreach ($products as $product) {
@@ -631,7 +611,7 @@ class ControlAction
             if($product->tags !="" && is_array(json_decode($product->tags))){
                 foreach (json_decode($product->tags) as $tag) {
 
-                    $nameTag = Tags::findID($tag);
+                    $nameTag = Tags::findID($this->connection,$tag);
     
                     if ($nameTag) {
                         array_push($arrNewTags, $nameTag->tag_name);
@@ -642,7 +622,7 @@ class ControlAction
             if($product->categories !="" && is_array(json_decode($product->categories))){
             foreach (json_decode($product->categories) as $cat) {
 
-                $nameCat = Categories::findID($cat);
+                $nameCat = Categories::findID($this->connection,$cat);
 
                 if ($nameCat) {
                     array_push($arrNewCats, $nameCat->cat_name);
@@ -664,20 +644,25 @@ class ControlAction
         <td scope='col'> $product->date </td>
         <td scope='col'> $product->product_name </td>
         <td scope='col'> $product->sku </td>
-        <td scope='col'> $product->price </td>
+        <td scope='col'>";if($product->price>0){ echo$product->price;} echo"</td>
         <td scope='col'>
             <img style='max-width: 80px;' src=";
-                echo $GLOBALS['linkpath'];
-                echo "/assets/upload/$product->image alt=' '>
+            
+                echo "$product->image alt=' '>
         </td>
         <td scope='col'>";
+        if (
+            is_array(json_decode($product->gallery))
+            && $product->gallery != null
+        ) {
                 foreach (json_decode($product->gallery) as $gal) {
                     echo "<img style='max-width: 40px;' src=";
                     echo $GLOBALS['linkpath'];
-                    echo "/assets/upload/$gal alt=' '>
+                    echo "$gal alt=' '>
                                 
                            ";
                 }
+            }
                 echo " </td> <td scope='col'>";
                 foreach ($product->categories as $key => $cat) {
 
@@ -729,8 +714,8 @@ class ControlAction
         $id = $_GET['delete'];
      
         if(is_numeric($id)){
-            if (Product::findID($id) != null) {
-                Product::delete($id);
+            if (Product::findID($this->connection,$id) != null) {
+                Product::delete($this->connection,$id);
                 echo 'success';
             }
             else{
@@ -758,7 +743,7 @@ class ControlAction
         $tag->tag_name = $name_tag;
         $tag->description = $des_tag;
         $tag->id = null;
-        $tag->insert();
+        $tag->insert($this->connection);
 
         header('location:index.php?controller=add_property');
     }
@@ -778,7 +763,7 @@ class ControlAction
         $cat->cat_name = $name_cat;
         $cat->description = $des_cat;
         $cat->id = null;
-        $cat->insert();
+        $cat->insert($this->connection);
 
         header('location:index.php?controller=add_property');
     }
