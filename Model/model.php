@@ -148,8 +148,9 @@ class DB_Config
         }
     }
 
-    public static function filter($connection,$object)
+    public static function filter($connection,$object,$page)
     {
+        $page = ($page-1)*5;
         $obj = json_decode($object, false);
         $model = new static();
         $model->sql = '';
@@ -159,10 +160,10 @@ class DB_Config
             $arrSql[] = " product_name like '%$obj->search%' ";
         }
         if ($obj->category != null) {
-            $arrSql[] =    " JSON_CONTAINS(categories, '\"$obj->category \"')";
+            $arrSql[] =    " ";
         }
         if ($obj->tagFind != null) {
-            $arrSql[] =    " JSON_CONTAINS(tags, '\"$obj->tagFind \"')";
+            $arrSql[] =    " ";
         }
         if ($obj->day_from != null && $obj->day_to != null) {
             $arrSql[] = "date between '$obj->day_from' and '$obj->day_to' ";
@@ -191,7 +192,7 @@ class DB_Config
             $model->sql = "select * from $model->tableName  ";
         }
 
-        $model->sql .= " order by  $obj->sortBy " . "$obj->sort";
+        $model->sql .= " order by  $obj->sortBy " . "$obj->sort limit 5 offset $page";
 
 
 

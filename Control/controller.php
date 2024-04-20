@@ -28,12 +28,24 @@ $this->connection = new PDO("mysql:host=$this->severName; dbname=$this->database
         $take = ceil(count($productsTotal) / 5);
         $page =1;
         $products = Product::allLimit($this->connection,5, 1);
+
         foreach ($products as $product) {
             $product->tags = [];
             $product->cat = [];
-           
-            
-            
+            $idcats = fk_Cat::get_all_id_cat($this->connection,$product->id);
+            if($idcats != null){
+            foreach ($idcats as $idcat) {
+                $cat = Categories::findID($this->connection, $idcat->id_cat);
+                array_push($product->cat,$cat->cat_name);
+            }
+        }
+        $idtags = fk_Tags::get_all_id_tag($this->connection,$product->id);
+        if($idtags != null){
+        foreach ($idtags as $idtag) {
+            $tag = Tags::findID($this->connection, $idtag->id_tag);
+            array_push($product->tags,$tag->tag_name);
+        }
+    }   
         }
 
 
@@ -45,7 +57,7 @@ $this->connection = new PDO("mysql:host=$this->severName; dbname=$this->database
     public function addProductView()
     {
         $categories = Categories::all($this->connection);
-        $tags = Tags::all($this->connection);
+        $tagss = Tags::all($this->connection);
 
         include 'View/add_product.php';
     }
@@ -59,8 +71,30 @@ $this->connection = new PDO("mysql:host=$this->severName; dbname=$this->database
        }
         
         $categories = Categories::all($this->connection);
-        $tags = Tags::all($this->connection);
+        $tagss = Tags::all($this->connection);
+
         $product = Product::findID($this->connection,$id);
+        
+            $product->tags = [];
+            $product->cat = [];
+            $idcats = fk_Cat::get_all_id_cat($this->connection,$product->id);
+            if($idcats != null){
+            foreach ($idcats as $idcat) {
+                
+                array_push($product->cat,$idcat->id_cat);
+              
+            }
+        }
+        
+        $idtags = fk_Tags::get_all_id_tag($this->connection,$product->id);
+        if($idtags != null){
+        foreach ($idtags as $idtag) {
+            $tag = Tags::findID($this->connection, $idtag->id_tag);
+            array_push($product->tags,$idtag->id_tag);
+        }
+    }  
+     
+        
 
         include 'View/add_product.php';
     }
@@ -79,7 +113,22 @@ $this->connection = new PDO("mysql:host=$this->severName; dbname=$this->database
         }
         $products = Product::allLimit($this->connection,5, $page);
         foreach ($products as $product) {
-            //tag cat
+            $product->tags = [];
+            $product->cat = [];
+            $idcats = fk_Cat::get_all_id_cat($this->connection,$product->id);
+            if($idcats != null){
+            foreach ($idcats as $idcat) {
+                $cat = Categories::findID($this->connection, $idcat->id_cat);
+                array_push($product->cat,$cat->cat_name);
+            }
+        }
+        $idtags = fk_Tags::get_all_id_tag($this->connection,$product->id);
+        if($idtags != null){
+        foreach ($idtags as $idtag) {
+            $tag = Tags::findID($this->connection, $idtag->id_tag);
+            array_push($product->tags,$tag->tag_name);
+        }
+    }   
         }
 
         
@@ -97,7 +146,22 @@ $this->connection = new PDO("mysql:host=$this->severName; dbname=$this->database
         $products = Product::allLimit($this->connection,5, $page);
 
         foreach ($products as $product) {
-           // tag cat
+            $product->tags = [];
+            $product->cat = [];
+            $idcats = fk_Cat::get_all_id_cat($this->connection,$product->id);
+            if($idcats != null){
+            foreach ($idcats as $idcat) {
+                $cat = Categories::findID($this->connection, $idcat->id_cat);
+                array_push($product->cat,$cat->cat_name);
+            }
+        }
+        $idtags = fk_Tags::get_all_id_tag($this->connection,$product->id);
+        if($idtags != null){
+        foreach ($idtags as $idtag) {
+            $tag = Tags::findID($this->connection, $idtag->id_tag);
+            array_push($product->tags,$tag->tag_name);
+        }
+    }   
         }
 
         foreach ($products as $product) {
@@ -126,9 +190,9 @@ $this->connection = new PDO("mysql:host=$this->severName; dbname=$this->database
             }
         }
             echo " </td> <td scope='col'>";
-            foreach ($product->categories as $key => $cat) {
+            foreach ($product->cat as $key => $cat) {
 
-                if ($key !== count($product->categories) - 1) {
+                if ($key !== count($product->cat) - 1) {
                     echo $cat . ",";
                 } else {
                     echo $cat;
@@ -181,14 +245,14 @@ $this->connection = new PDO("mysql:host=$this->severName; dbname=$this->database
          $img = $_FILES['image'];
         }
 
-        if(isset($_POST['tags'])){
+        // if(isset($_POST['tags'])){
 
-         $tags = $_POST['tags'];
-        }
-        if(isset($_POST['categories'])){
+        //  $tags = $_POST['tags'];
+        // }
+        // if(isset($_POST['categories'])){
 
-         $categories = $_POST['categories'];
-        }
+        //  $categories = $_POST['categories'];
+        // }
         if(isset($_FILES['gallery'])){
 
          $gallery = $_FILES['gallery'];
@@ -339,7 +403,7 @@ $this->connection = new PDO("mysql:host=$this->severName; dbname=$this->database
             }
 
 
-       // header('location:index.php?page=1');
+        header('location:index.php?page=1');
         
     }
 
@@ -353,12 +417,12 @@ $this->connection = new PDO("mysql:host=$this->severName; dbname=$this->database
         if(isset($_FILES['image'])){
             $img = $_FILES['image'];
         }
-        if(isset($_POST['tags'])){
-            $tags = $_POST['tags'];
-        }
-        if(isset($_POST['categories'])){
-            $categories = $_POST['categories'];
-        }
+        // if(isset($_POST['tags'])){
+        //     $tags = $_POST['tags'];
+        // }
+        // if(isset($_POST['categories'])){
+        //     $categories = $_POST['categories'];
+        // }
         if(isset($_FILES['gallery'])){
             $gallery = $_FILES['gallery'];
         }
@@ -402,8 +466,8 @@ $this->connection = new PDO("mysql:host=$this->severName; dbname=$this->database
 
         
         
-        
-        $product->id = $_GET['product_id'];
+        $productid = $_GET['product_id'];
+        $product->id = $productid;
         
         
         if ($img['size'] > 0) {
@@ -426,33 +490,7 @@ $this->connection = new PDO("mysql:host=$this->severName; dbname=$this->database
 
         
 
-    if(isset($tags)) {
-        $totalTag = [];
-        foreach ($tags as $tag) {
-            
-            array_push($totalTag, $val->enCode($tag));
-        }
-        $product->tags = json_encode($totalTag);
-        
-    }
-    else{
-        $totalTag = [];
-        $product->tags = json_encode($totalTag);
-    }
-    
-    
-    if(isset($_POST['categories'])){
-        $totalCat = [];
-        foreach ($categories as $cat) {
-            array_push($totalCat, $val->enCode($cat));
-        }
-        $product->categories = json_encode($totalCat);
-        
-    }
-    else{
-        $totalCat = [];
-        $product->categories = json_encode($totalCat);
-    }
+   
     
     unset($val);
     if($_FILES['gallery']['size'][0] != 0){
@@ -482,13 +520,10 @@ $this->connection = new PDO("mysql:host=$this->severName; dbname=$this->database
 
 
         foreach ($galleries as $gal) {
+            if($gal!=""){
             array_push($totalGal, "./assets/upload/". $gal);
+            }
         }
-
-
-
-
-
         if (count($galleries) == 1 & $galleries[0] == "") {
             if (!isset($_POST['gallery_old'])) {
                 $product->gallery = null;
@@ -506,10 +541,54 @@ $this->connection = new PDO("mysql:host=$this->severName; dbname=$this->database
         $product->gallery = json_encode($totalGal);
 
 
+        
 
+        $fk_cats = fk_Cat::get_all_id_cat($this->connection, $productid);
+        $fk_tags = fk_Tags::get_all_id_tag($this->connection, $productid);
 
+        if($fk_cats !=null){
+                foreach ($fk_cats as $fk_cat) {
+                    fk_Cat::delete_fk_cat($this->connection, $productid, $fk_cat->id_cat);
+                    
+                }
+            
+        }
+        else{
+            if(isset($_POST['categories'])){
+                $categories = $_POST['categories'];
+                foreach ($categories as $cat) {
+                    $catfk = new fk_Cat();
+                $catfk->id_product = $productid;
+                $catfk->id_cat = $cat;
+                $catfk->id = null;
+                $catfk->insert($this->connection);
+                }
+                
+        
+            }
+        }
 
-        $product->update();
+        if($fk_tags !=null){
+            foreach ($fk_tags as $fk_tag) {
+                fk_Tags::delete_fk_tag($this->connection, $productid, $fk_tag->id_tag);  
+            }
+        
+    } else{
+        if(isset($_POST['tags'])){
+            $tags = $_POST['tags'];
+            foreach ($tags as $tag) {
+                $tagfk = new fk_Tags();
+                $tagfk->id_product = $productid;
+                $tagfk->id_tag = $tag;
+                $tagfk->id = null;
+                $tagfk->insert($this->connection);
+            
+            }
+        }
+
+    }
+       
+        $product->update($this->connection);
 
         header('location:index.php?page=1');
         
@@ -598,47 +677,36 @@ $this->connection = new PDO("mysql:host=$this->severName; dbname=$this->database
 
         $filterjson = json_encode($filterArr);
 
-        $products = Product::filter($this->connection,$filterjson);
+        $products = Product::filter($this->connection,$filterjson,$page);
       
 
-        $tags = Tags::all($this->connection);
-        $categories = Categories::all($this->connection);
+        
 
 
         foreach ($products as $product) {
-            $arrNewTags = [];
-            $arrNewCats = [];
-            if($product->tags !="" && is_array(json_decode($product->tags))){
-                foreach (json_decode($product->tags) as $tag) {
-
-                    $nameTag = Tags::findID($this->connection,$tag);
-    
-                    if ($nameTag) {
-                        array_push($arrNewTags, $nameTag->tag_name);
-                    }
-                }
-            }
-            
-            if($product->categories !="" && is_array(json_decode($product->categories))){
-            foreach (json_decode($product->categories) as $cat) {
-
-                $nameCat = Categories::findID($this->connection,$cat);
-
-                if ($nameCat) {
-                    array_push($arrNewCats, $nameCat->cat_name);
-                }
+            $product->tags = [];
+            $product->cat = [];
+            $idcats = fk_Cat::get_all_id_cat($this->connection,$product->id);
+            if($idcats != null){
+            foreach ($idcats as $idcat) {
+                $cat = Categories::findID($this->connection, $idcat->id_cat);
+                array_push($product->cat,$cat->cat_name);
             }
         }
-            $product->categories = $arrNewCats;
-            $product->tags = $arrNewTags;
+        $idtags = fk_Tags::get_all_id_tag($this->connection,$product->id);
+        if($idtags != null){
+        foreach ($idtags as $idtag) {
+            $tag = Tags::findID($this->connection, $idtag->id_tag);
+            array_push($product->tags,$tag->tag_name);
         }
-        $start = ($page - 1) * 5;
-        $countLoop = 0;
+    }   
+        }
+       
        
         echo '<p class="page-present" hidden>'; echo $page; echo '</p>';
         foreach ($products as $product) {
 
-            if ($countLoop >= $start && $countLoop < $page * 5) {
+            
                 echo "
         <tr id='$product->id'>
         <td scope='col'> $product->date </td>
@@ -664,9 +732,9 @@ $this->connection = new PDO("mysql:host=$this->severName; dbname=$this->database
                 }
             }
                 echo " </td> <td scope='col'>";
-                foreach ($product->categories as $key => $cat) {
+                foreach ($product->cat as $key => $cat) {
 
-                    if ($key !== count($product->categories) - 1) {
+                    if ($key !== count($product->cat) - 1) {
                         echo $cat . ", ";
                     } else {
                         echo $cat;
@@ -701,11 +769,14 @@ $this->connection = new PDO("mysql:host=$this->severName; dbname=$this->database
     </tr>
     
     ";
-            }
-            $countLoop++;
+            
         }
         echo "<input id='total_filter' type='hidden' value='";
-        echo count($products);
+        if($products != null){
+            echo $page*5+5;
+        } else{
+            echo $page*5;
+        }
         echo "'>";
     }
 

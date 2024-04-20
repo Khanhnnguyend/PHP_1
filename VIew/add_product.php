@@ -64,8 +64,9 @@
             <label for="" class="form-label">Tags</label>
             <select multiple name="tags[]" class="form-select" id="multiple-select-field-tag" data-placeholder="Tags">
 
-              <?php foreach ($tags as $tag): ?>
-                <option <?php if(isset($product)&& is_array(json_decode($product->tags))&& $product->tags!=null) foreach (json_decode($product->tags) as $id_tag) {
+              <?php foreach($tagss as $tag): ?>
+                <option <?php if(isset($product))  foreach ($product->tags as $id_tag) {
+                
                   if ($id_tag == $tag->id) {
                     echo "selected";
                   }
@@ -82,13 +83,16 @@
             <label for="" class="form-label">Categories</label>
             <select class="form-control" name="categories[]" id="multiple-select-field-cat" data-placeholder="category"
               multiple>
-              <?php foreach ($categories as $cat): ?>
-                <option <?php if(isset($product) && $product->categories!=null) foreach (json_decode($product->categories) as $id_cat) {
-                  if ($id_cat == $cat->id) {
+              <?php foreach ($categories as $cate): ?>
+                <option <?php if(isset($product) && $product->cat!=null) foreach ($product->cat as $id_cat) {
+                  
+               
+                  if ($id_cat == $cate->id) {
                     echo "selected";
+                 
                   }
-                } ?> value="<?php echo $cat->id ?>">
-                  <?php echo $cat->cat_name; ?>
+                } ?> value="<?php echo $cate->id ?>">
+                  <?php echo $cate->cat_name; ?>
                 </option>
               <?php endforeach ?>
 
@@ -107,7 +111,7 @@
               </div>
               <div class="upload__img-wrap">
                 <?php $count =0;?>
-              <?php if(isset($product) && $product->gallery != null && json_decode($product->gallery)[0]!="" ) {foreach (json_decode($product->gallery) as $gal):?>
+              <?php if(isset($product) && $product->gallery != null ) {foreach (json_decode($product->gallery) as $gal):?>
                 
                 <div class="upload__img-box">
                   <input type="hidden" value="<?php echo $gal ?>" name="gallery_old[]">
