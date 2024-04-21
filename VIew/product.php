@@ -159,14 +159,14 @@
                                 } ?>
                             </td>
 
-                            <td scope="col"><?php foreach ($product->cat as $cat) {
-                                echo $cat;
-                            } ?></td>
+                            <td scope="col"><?php foreach ($product->cat as $cat) :?>
+                            <p ><?php echo $cat;?> </p>
+                            <?php endforeach;?>
+                            </td>
 
-                            <td scope="col">
-                            <?php foreach ($product->tags as $tag) {
-                                echo $tag;
-                            } ?>
+                            <td scope="col"><?php foreach ($product->tags as $tag):  ?> 
+                             <p ><?php echo $tag;?> </p>
+                            <?php endforeach;?>
                             </td>
 
                             <td style="">

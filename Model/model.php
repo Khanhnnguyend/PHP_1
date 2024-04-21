@@ -153,17 +153,17 @@ class DB_Config
         $page = ($page-1)*5;
         $obj = json_decode($object, false);
         $model = new static();
-        $model->sql = '';
+        $sql = '';
         $arrSql = [];
 
         if ($obj->search != null) {
             $arrSql[] = " product_name like '%$obj->search%' ";
         }
         if ($obj->category != null) {
-            $arrSql[] =    " ";
+            $arrSql[] =    " id IN (select id_product from product_fk_cat  WHERE id_cat = $obj->category) ";
         }
         if ($obj->tagFind != null) {
-            $arrSql[] =    " ";
+            $arrSql[] =    " id IN (select id_product from product_fk_tag  WHERE id_tag = $obj->tagFind)  ";
         }
         if ($obj->day_from != null && $obj->day_to != null) {
             $arrSql[] = "date between '$obj->day_from' and '$obj->day_to' ";
@@ -184,19 +184,19 @@ class DB_Config
             $arrSql[] = " price < '$obj->price_to' ";
         }
 
-        $model->sql = implode(" and ", $arrSql);
+        $sql = implode(" and ", $arrSql);
 
-        if ($model->sql != '') {
-            $model->sql = "select * from $model->tableName  where" . $model->sql;
+        if ($sql != '') {
+            $sql = "select * from $model->tableName  where" . $sql;
         } else {
-            $model->sql = "select * from $model->tableName  ";
+            $sql = "select * from $model->tableName  ";
         }
 
-        $model->sql .= " order by  $obj->sortBy " . "$obj->sort limit 5 offset $page";
+        $sql .= " order by  $obj->sortBy " . "$obj->sort limit 5 offset $page";
 
+        
 
-
-        $stmt = $connection->prepare($model->sql);
+        $stmt = $connection->prepare($sql);
         $stmt->execute();
         $result = $stmt->fetchAll(PDO::FETCH_CLASS, get_class($model));
         if (count($result) == 0) {

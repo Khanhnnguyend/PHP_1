@@ -1,8 +1,6 @@
 td {
     word-wrap: break-word;
     text-overflow: ellipsis;
-    white-space: pre-line;
-    
 }
 
 .delete_icon{

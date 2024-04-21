@@ -16,10 +16,7 @@
     $GLOBALS['root'] =$root;
     $GLOBALS['linkpath'] = "http://".basename($_SERVER['HTTP_HOST']).$root;
     
-    // add product
-    //update
-    //filter
-   
+  
     if(isset($_POST['insert_product']) ) {
         $controlAction->addProduct();
     }
@@ -78,7 +75,7 @@
             && !isset($_GET['filter_search'])
             &&!isset($_GET['page'])
             &&!isset($_GET['delete'])){
-                var_dump( $controlAction->connection);
+              
                 $controlAction->productView();
             }
 			break;

@@ -1,51 +1,52 @@
 <?php
-require_once("Model/validator.php");
+require_once ("Model/validator.php");
 
 
 
 class ControlAction
 {
     public $severName;
-public $database;
-public $connection;
+    public $database;
+    public $connection;
 
 
-public function __construct(){
-     $this->severName = "localhost";
- $this->database = "db_khanh";
-$this->connection = new PDO("mysql:host=$this->severName; dbname=$this->database;charset=utf8", 'root', '');
+    public function __construct()
+    {
+        $this->severName = "localhost";
+        $this->database = "db_khanh";
+        $this->connection = new PDO("mysql:host=$this->severName; dbname=$this->database;charset=utf8", 'root', '');
 
-}
-    
+    }
+
 
     public function productView()
     {
-        
+
         $tags = Tags::all($this->connection);
         $categories = Categories::all($this->connection);
 
         $productsTotal = Product::all($this->connection);
         $take = ceil(count($productsTotal) / 5);
-        $page =1;
-        $products = Product::allLimit($this->connection,5, 1);
+        $page = 1;
+        $products = Product::allLimit($this->connection, 5, 1);
 
         foreach ($products as $product) {
             $product->tags = [];
             $product->cat = [];
-            $idcats = fk_Cat::get_all_id_cat($this->connection,$product->id);
-            if($idcats != null){
-            foreach ($idcats as $idcat) {
-                $cat = Categories::findID($this->connection, $idcat->id_cat);
-                array_push($product->cat,$cat->cat_name);
+            $idcats = fk_Cat::get_all_id_cat($this->connection, $product->id);
+            if ($idcats != null) {
+                foreach ($idcats as $idcat) {
+                    $cat = Categories::findID($this->connection, $idcat->id_cat);
+                    array_push($product->cat, $cat->cat_name);
+                }
             }
-        }
-        $idtags = fk_Tags::get_all_id_tag($this->connection,$product->id);
-        if($idtags != null){
-        foreach ($idtags as $idtag) {
-            $tag = Tags::findID($this->connection, $idtag->id_tag);
-            array_push($product->tags,$tag->tag_name);
-        }
-    }   
+            $idtags = fk_Tags::get_all_id_tag($this->connection, $product->id);
+            if ($idtags != null) {
+                foreach ($idtags as $idtag) {
+                    $tag = Tags::findID($this->connection, $idtag->id_tag);
+                    array_push($product->tags, $tag->tag_name);
+                }
+            }
         }
 
 
@@ -65,36 +66,36 @@ $this->connection = new PDO("mysql:host=$this->severName; dbname=$this->database
     public function updateProductView()
     {
         $id = $_GET['product_id'];
-       if(!is_numeric($id)){
-        header('location:index.php');
-        
-       }
-        
+        if (!is_numeric($id)) {
+            header('location:index.php');
+
+        }
+
         $categories = Categories::all($this->connection);
         $tagss = Tags::all($this->connection);
 
-        $product = Product::findID($this->connection,$id);
-        
-            $product->tags = [];
-            $product->cat = [];
-            $idcats = fk_Cat::get_all_id_cat($this->connection,$product->id);
-            if($idcats != null){
+        $product = Product::findID($this->connection, $id);
+
+        $product->tags = [];
+        $product->cat = [];
+        $idcats = fk_Cat::get_all_id_cat($this->connection, $product->id);
+        if ($idcats != null) {
             foreach ($idcats as $idcat) {
-                
-                array_push($product->cat,$idcat->id_cat);
-              
+
+                array_push($product->cat, $idcat->id_cat);
+
             }
         }
-        
-        $idtags = fk_Tags::get_all_id_tag($this->connection,$product->id);
-        if($idtags != null){
-        foreach ($idtags as $idtag) {
-            $tag = Tags::findID($this->connection, $idtag->id_tag);
-            array_push($product->tags,$idtag->id_tag);
+
+        $idtags = fk_Tags::get_all_id_tag($this->connection, $product->id);
+        if ($idtags != null) {
+            foreach ($idtags as $idtag) {
+                $tag = Tags::findID($this->connection, $idtag->id_tag);
+                array_push($product->tags, $idtag->id_tag);
+            }
         }
-    }  
-     
-        
+
+
 
         include 'View/add_product.php';
     }
@@ -107,61 +108,61 @@ $this->connection = new PDO("mysql:host=$this->severName; dbname=$this->database
 
         $take = ceil(count($productsTotal) / 5);
         $page = $_GET['page'];
-        if(!is_numeric($page)){
-            echo"<script> Lỗi </script>";
+        if (!is_numeric($page)) {
+            echo "<script> Lỗi </script>";
             return;
         }
-        $products = Product::allLimit($this->connection,5, $page);
+        $products = Product::allLimit($this->connection, 5, $page);
         foreach ($products as $product) {
             $product->tags = [];
             $product->cat = [];
-            $idcats = fk_Cat::get_all_id_cat($this->connection,$product->id);
-            if($idcats != null){
-            foreach ($idcats as $idcat) {
-                $cat = Categories::findID($this->connection, $idcat->id_cat);
-                array_push($product->cat,$cat->cat_name);
+            $idcats = fk_Cat::get_all_id_cat($this->connection, $product->id);
+            if ($idcats != null) {
+                foreach ($idcats as $idcat) {
+                    $cat = Categories::findID($this->connection, $idcat->id_cat);
+                    array_push($product->cat, $cat->cat_name);
+                }
+            }
+            $idtags = fk_Tags::get_all_id_tag($this->connection, $product->id);
+            if ($idtags != null) {
+                foreach ($idtags as $idtag) {
+                    $tag = Tags::findID($this->connection, $idtag->id_tag);
+                    array_push($product->tags, $tag->tag_name);
+                }
             }
         }
-        $idtags = fk_Tags::get_all_id_tag($this->connection,$product->id);
-        if($idtags != null){
-        foreach ($idtags as $idtag) {
-            $tag = Tags::findID($this->connection, $idtag->id_tag);
-            array_push($product->tags,$tag->tag_name);
-        }
-    }   
-        }
 
-        
+
         include 'View/product.php';
-        
+
     }
 
-   
+
 
     public function page()
     {
 
         $page = $_GET['page'];
 
-        $products = Product::allLimit($this->connection,5, $page);
+        $products = Product::allLimit($this->connection, 5, $page);
 
         foreach ($products as $product) {
             $product->tags = [];
             $product->cat = [];
-            $idcats = fk_Cat::get_all_id_cat($this->connection,$product->id);
-            if($idcats != null){
-            foreach ($idcats as $idcat) {
-                $cat = Categories::findID($this->connection, $idcat->id_cat);
-                array_push($product->cat,$cat->cat_name);
+            $idcats = fk_Cat::get_all_id_cat($this->connection, $product->id);
+            if ($idcats != null) {
+                foreach ($idcats as $idcat) {
+                    $cat = Categories::findID($this->connection, $idcat->id_cat);
+                    array_push($product->cat, $cat->cat_name);
+                }
             }
-        }
-        $idtags = fk_Tags::get_all_id_tag($this->connection,$product->id);
-        if($idtags != null){
-        foreach ($idtags as $idtag) {
-            $tag = Tags::findID($this->connection, $idtag->id_tag);
-            array_push($product->tags,$tag->tag_name);
-        }
-    }   
+            $idtags = fk_Tags::get_all_id_tag($this->connection, $product->id);
+            if ($idtags != null) {
+                foreach ($idtags as $idtag) {
+                    $tag = Tags::findID($this->connection, $idtag->id_tag);
+                    array_push($product->tags, $tag->tag_name);
+                }
+            }
         }
 
         foreach ($products as $product) {
@@ -170,45 +171,44 @@ $this->connection = new PDO("mysql:host=$this->severName; dbname=$this->database
         <td scope='col'>$product->date</td>
         <td scope='col'>$product->product_name</td>
         <td scope='col'>$product->sku</td>
-        <td scope='col'>";if($product->price>0){ echo$product->price;} echo"</td>
+        <td scope='col'>";
+            if ($product->price > 0) {
+                echo $product->price;
+            }
+            echo "</td>
         <td scope='col'>
             <img style='max-width: 80px;' src=";
-        
+
             echo "$product->image alt=' '>
         </td>
         <td scope='col'>";
-        if (
-            is_array(json_decode($product->gallery))
-            && $product->gallery != null
-        ) {
-            foreach (json_decode($product->gallery) as $gal) {
-                echo "<img style='max-width: 40px;' src=";
-           
-                echo "$gal alt=' '>
+            if (
+                is_array(json_decode($product->gallery))
+                && $product->gallery != null
+            ) {
+                foreach (json_decode($product->gallery) as $gal) {
+                    echo "<img style='max-width: 40px;' src=";
+
+                    echo "$gal alt=' '>
                                 
                            ";
+                }
             }
-        }
             echo " </td> <td scope='col'>";
-            foreach ($product->cat as $key => $cat) {
-
-                if ($key !== count($product->cat) - 1) {
-                    echo $cat . ",";
-                } else {
-                    echo $cat;
-                };
+            foreach ($product->cat as $cat) {
+                echo "<p>";
+                echo $cat;
+                echo "</p>";
             }
 
             echo "
         </td>
 
         <td scope='col'>";
-            foreach ($product->tags as $key => $tag) {
-                if ($key !== count($product->tags) - 1) {
-                    echo $tag . ", ";
-                } else {
-                    echo $tag;
-                };
+            foreach ($product->tags as $tag) {
+                echo "<p>";
+                echo $tag;
+                echo "</p>";
             }
 
             echo " </td>
@@ -241,8 +241,8 @@ $this->connection = new PDO("mysql:host=$this->severName; dbname=$this->database
         $sku = $_POST['sku'];
         $price = $_POST['price'];
         $date = $_POST['date'];
-        if(isset($_FILES['image'])){
-         $img = $_FILES['image'];
+        if (isset($_FILES['image'])) {
+            $img = $_FILES['image'];
         }
 
         // if(isset($_POST['tags'])){
@@ -253,13 +253,11 @@ $this->connection = new PDO("mysql:host=$this->severName; dbname=$this->database
 
         //  $categories = $_POST['categories'];
         // }
-        if(isset($_FILES['gallery'])){
+        if (isset($_FILES['gallery'])) {
 
-         $gallery = $_FILES['gallery'];
+            $gallery = $_FILES['gallery'];
         }
 
-
-        
         $product = new Product();
 
         $product->product_name = $val->enCode($name_product);
@@ -275,28 +273,25 @@ $this->connection = new PDO("mysql:host=$this->severName; dbname=$this->database
         }
         $product->price = $price;
 
-        $monthYear =  '/^\d{4}-\d{2}$/';
+        $monthYear = '/^\d{4}-\d{2}$/';
         $dayMonthYear = '/^\d{4}-\d{2}-\d{2}$/';
-        if(preg_match($dayMonthYear, $date) !=1 && $date !=""){
+        if (preg_match($dayMonthYear, $date) != 1 && $date != "") {
             echo "<script> alert('date không hợp lệ ')</script>";
             return;
         }
-        if(preg_match($dayMonthYear, $date) ==1){
+        if (preg_match($dayMonthYear, $date) == 1) {
             if ($date > date("Y-m-d")) {
                 echo "<script> alert('date không hợp lệ ')</script>";
                 return;
             }
         }
 
-        if(preg_match($monthYear, $date) ==1){
+        if (preg_match($monthYear, $date) == 1) {
             if ($date > date("Y-m")) {
                 echo "<script> alert('date không hợp lệ ')</script>";
                 return;
             }
         }
-
-
-
 
         $product->date = $date;
 
@@ -304,82 +299,70 @@ $this->connection = new PDO("mysql:host=$this->severName; dbname=$this->database
             $product->date = date("Y-m-d");
         }
 
-        
-
-
-
         $product->id = null;
 
         if ($img['size'] > 0) {
-        $filePic = "";
+            $filePic = "";
 
-        $type = $_FILES['image']['type'];
-        $extensions = array('image/jpeg', 'image/png', 'image/gif');
-        if (!in_array($type, $extensions)) {
-            echo "<script> alert('ảnh không hợp lệ ')</script>";
-            return;
-        }
+            $type = $_FILES['image']['type'];
+            $extensions = array('image/jpeg', 'image/png', 'image/gif');
+            if (!in_array($type, $extensions)) {
+                echo "<script> alert('ảnh không hợp lệ ')</script>";
+                return;
+            }
 
             $filePic = $img['name'];
             $filePic = "./assets/upload/" . $img['name'];
             $product->image = $filePic;
             move_uploaded_file($img['tmp_name'], $filePic);
-        }else{
+        } else {
             $product->image = null;
         }
 
-        
-        
-        
 
+        unset($val);
 
-        
-   
+        if ($_FILES['gallery']['size'][0] > 0) {
 
-    unset($val);
+            foreach ($_FILES['gallery']['type'] as $type) {
 
-    if($_FILES['gallery']['size'][0] > 0){
-
-        foreach ($_FILES['gallery']['type'] as $type) {
-
-            $extensions = array('image/jpeg', 'image/png', 'image/gif');
-            if (!in_array($type, $extensions)) {
-                echo "<script> alert('ảnh gallery không hợp lệ ')</script>";
-                return;
+                $extensions = array('image/jpeg', 'image/png', 'image/gif');
+                if (!in_array($type, $extensions)) {
+                    echo "<script> alert('ảnh gallery không hợp lệ ')</script>";
+                    return;
+                }
             }
+
+
+            $totalGal = [];
+
+            $galleries = array_map(function ($gallery1, $gallery2) {
+                $filePic = "";
+                $filePic = "assets/upload/" . $gallery1;
+                move_uploaded_file($gallery2, $filePic);
+
+
+                return $filePic;
+            }, $gallery['name'], $gallery['tmp_name']);
+
+            foreach ($galleries as $gal) {
+                array_push($totalGal, $gal);
+            }
+            $product->gallery = json_encode($totalGal);
+        } else {
+            $product->gallery = null;
         }
 
-    
-        $totalGal = [];
 
-        $galleries = array_map(function ($gallery1, $gallery2) {
-            $filePic = "";
-            $filePic = "assets/upload/" . $gallery1;
-            move_uploaded_file($gallery2, $filePic);
-
-
-            return $filePic;
-        }, $gallery['name'], $gallery['tmp_name']);
-
-        foreach ($galleries as $gal) {
-            array_push($totalGal, $gal);
-        }
-        $product->gallery = json_encode($totalGal);
-    }
-    else {
-        $product->gallery = null;
-    }
-
-        
 
 
         $product->insert($this->connection);
-        $productID =  $product->getLastID($this->connection);
+        $productID = $product->getLastID($this->connection);
 
-        if(isset($_POST['tags'])){
-            
+        if (isset($_POST['tags'])) {
+            $tags = $_POST['tags'];
             foreach ($tags as $tag) {
-    
+
                 $tagfk = new fk_Tags();
                 $tagfk->id_product = $productID;
                 $tagfk->id_tag = $tag;
@@ -387,24 +370,25 @@ $this->connection = new PDO("mysql:host=$this->severName; dbname=$this->database
                 $tagfk->insert($this->connection);
             }
         }
-       
 
-            if(isset($_POST['categories'])){
-             
-                foreach ($categories as $cat) {
-                    $catfk = new fk_Cat();
-                $catfk->product_id = $productID;
+
+        if (isset($_POST['categories'])) {
+            echo "hahaha";
+            $categories = $_POST['categories'];
+            foreach ($categories as $cat) {
+                $catfk = new fk_Cat();
+                $catfk->id_product = $productID;
                 $catfk->id_cat = $cat;
                 $catfk->id = null;
                 $catfk->insert($this->connection);
-                }
-                
-        
             }
 
 
+        }
+
+
         header('location:index.php?page=1');
-        
+
     }
 
     public function updateProduct()
@@ -414,7 +398,7 @@ $this->connection = new PDO("mysql:host=$this->severName; dbname=$this->database
         $sku = $_POST['sku'];
         $price = $_POST['price'];
         $date = $_POST['date'];
-        if(isset($_FILES['image'])){
+        if (isset($_FILES['image'])) {
             $img = $_FILES['image'];
         }
         // if(isset($_POST['tags'])){
@@ -423,16 +407,16 @@ $this->connection = new PDO("mysql:host=$this->severName; dbname=$this->database
         // if(isset($_POST['categories'])){
         //     $categories = $_POST['categories'];
         // }
-        if(isset($_FILES['gallery'])){
+        if (isset($_FILES['gallery'])) {
             $gallery = $_FILES['gallery'];
         }
-        if(isset($_POST['gallery_old'])){
+        if (isset($_POST['gallery_old'])) {
             $gallery_old = $_POST['gallery_old'];
         }
 
 
 
-        
+
         $product = new Product();
 
         $product->product_name = $val->enCode($name_product);
@@ -454,7 +438,7 @@ $this->connection = new PDO("mysql:host=$this->severName; dbname=$this->database
         }
 
         $pattern = '/^\d{4}-\d{2}-\d{2}$/';
-        if(preg_match($pattern, $date) !=1){
+        if (preg_match($pattern, $date) != 1) {
             echo "<script> alert('date không hợp lệ ')</script>";
             return;
         }
@@ -464,48 +448,48 @@ $this->connection = new PDO("mysql:host=$this->severName; dbname=$this->database
             $product->date = date("Y-m-d");
         }
 
-        
-        
+
+
         $productid = $_GET['product_id'];
         $product->id = $productid;
-        
-        
+
+
         if ($img['size'] > 0) {
-        $type = $_FILES['image']['type'];
-        $extensions = array('image/jpeg', 'image/png', 'image/gif');
-        if (!in_array($type, $extensions)) {
-            echo "<script> alert('ảnh không hợp lệ ')</script>";
-            return;
-        }
-        $filePic = "";
-        
-        
-        $filePic = $img['name'];
-        $filePic = "./assets/upload/" . $img['name'];
-        $product->image = $filePic;
-        move_uploaded_file($img['tmp_name'], $filePic);
-    } else {
-        $product->image = null;
-    }
-
-        
-
-   
-    
-    unset($val);
-    if($_FILES['gallery']['size'][0] != 0){
-        
-    
-        foreach ($_FILES['gallery']['type'] as $type) {
-
+            $type = $_FILES['image']['type'];
             $extensions = array('image/jpeg', 'image/png', 'image/gif');
             if (!in_array($type, $extensions)) {
-                echo "<script> alert('ảnh gallery không hợp lệ ')</script>";
+                echo "<script> alert('ảnh không hợp lệ ')</script>";
                 return;
             }
+            $filePic = "";
+
+
+            $filePic = $img['name'];
+            $filePic = "./assets/upload/" . $img['name'];
+            $product->image = $filePic;
+            move_uploaded_file($img['tmp_name'], $filePic);
+        } else {
+            $product->image = null;
         }
-    }
-   
+
+
+
+
+
+        unset($val);
+        if ($_FILES['gallery']['size'][0] != 0) {
+
+
+            foreach ($_FILES['gallery']['type'] as $type) {
+
+                $extensions = array('image/jpeg', 'image/png', 'image/gif');
+                if (!in_array($type, $extensions)) {
+                    echo "<script> alert('ảnh gallery không hợp lệ ')</script>";
+                    return;
+                }
+            }
+        }
+
         $totalGal = [];
 
         $galleries = array_map(function ($gallery1, $gallery2) {
@@ -520,8 +504,8 @@ $this->connection = new PDO("mysql:host=$this->severName; dbname=$this->database
 
 
         foreach ($galleries as $gal) {
-            if($gal!=""){
-            array_push($totalGal, "./assets/upload/". $gal);
+            if ($gal != "") {
+                array_push($totalGal, "./assets/upload/" . $gal);
             }
         }
         if (count($galleries) == 1 & $galleries[0] == "") {
@@ -541,40 +525,46 @@ $this->connection = new PDO("mysql:host=$this->severName; dbname=$this->database
         $product->gallery = json_encode($totalGal);
 
 
-        
+
 
         $fk_cats = fk_Cat::get_all_id_cat($this->connection, $productid);
         $fk_tags = fk_Tags::get_all_id_tag($this->connection, $productid);
 
-        if($fk_cats !=null){
-                foreach ($fk_cats as $fk_cat) {
-                    fk_Cat::delete_fk_cat($this->connection, $productid, $fk_cat->id_cat);
-                    
-                }
-            
-        }
-        else{
-            if(isset($_POST['categories'])){
-                $categories = $_POST['categories'];
-                foreach ($categories as $cat) {
-                    $catfk = new fk_Cat();
+        if ($fk_cats != null && isset($_POST['categories'])) {
+            foreach ($fk_cats as $fk_cat) {
+                fk_Cat::delete_fk_cat($this->connection, $productid, $fk_cat->id_cat);
+
+            }
+
+            $categories = $_POST['categories'];
+            foreach ($categories as $cat) {
+                $catfk = new fk_Cat();
                 $catfk->id_product = $productid;
                 $catfk->id_cat = $cat;
                 $catfk->id = null;
                 $catfk->insert($this->connection);
+            }
+
+        } else {
+            if (isset($_POST['categories'])) {
+                $categories = $_POST['categories'];
+                foreach ($categories as $cat) {
+                    $catfk = new fk_Cat();
+                    $catfk->id_product = $productid;
+                    $catfk->id_cat = $cat;
+                    $catfk->id = null;
+                    $catfk->insert($this->connection);
                 }
-                
-        
+
+
             }
         }
 
-        if($fk_tags !=null){
+        if ($fk_tags != null && isset($_POST['tags'])) {
             foreach ($fk_tags as $fk_tag) {
-                fk_Tags::delete_fk_tag($this->connection, $productid, $fk_tag->id_tag);  
+                fk_Tags::delete_fk_tag($this->connection, $productid, $fk_tag->id_tag);
+
             }
-        
-    } else{
-        if(isset($_POST['tags'])){
             $tags = $_POST['tags'];
             foreach ($tags as $tag) {
                 $tagfk = new fk_Tags();
@@ -582,24 +572,36 @@ $this->connection = new PDO("mysql:host=$this->severName; dbname=$this->database
                 $tagfk->id_tag = $tag;
                 $tagfk->id = null;
                 $tagfk->insert($this->connection);
-            
+
             }
+
+        } else {
+            if (isset($_POST['tags'])) {
+                $tags = $_POST['tags'];
+                foreach ($tags as $tag) {
+                    $tagfk = new fk_Tags();
+                    $tagfk->id_product = $productid;
+                    $tagfk->id_tag = $tag;
+                    $tagfk->id = null;
+                    $tagfk->insert($this->connection);
+
+                }
+            }
+
         }
 
-    }
-       
         $product->update($this->connection);
 
         header('location:index.php?page=1');
-        
+
     }
 
-    
+
     //filter
     public function filterSearch()
     {
         $val = new Validate();
-        
+
         $search = $_GET['search'];
         $page = $_GET['page_filter'];
         $sort = $_GET['sort'];
@@ -621,43 +623,47 @@ $this->connection = new PDO("mysql:host=$this->severName; dbname=$this->database
         $tagFind = $val->enCode($tagFind);
 
         $date = date("Y-m-d");
-       
-        $date1 =  date($day_from);
-        $date2 = date($day_to);
-        
 
-        if ( $day_from!="" && $date1 > $date ) {
-            echo  '<p class="err_message_filter">Sai trường thông tin</p>';
+        $date1 = date($day_from);
+        $date2 = date($day_to);
+
+
+        if ($day_from != "" && $date1 > $date) {
+            echo '<p class="err_message_filter">Sai trường thông tin</p>';
             return;
         }
 
-        
-        if ((preg_match($pattern, $day_from) !=1&&$day_from!="" )||
-        ( preg_match($pattern, $day_to)!=1 && $day_to != "")) {
-            
+
+        if (
+            (preg_match($pattern, $day_from) != 1 && $day_from != "") ||
+            (preg_match($pattern, $day_to) != 1 && $day_to != "")
+        ) {
+
             echo '<p class="err_message_filter">Sai trường thông tin</p>';
             return;
         } else {
-            if (  $day_from!=""  && $day_to != "" && $date1 > $date2) {
-           
-                echo  '<p class="err_message_filter">Sai trường thông tin</p>';
+            if ($day_from != "" && $day_to != "" && $date1 > $date2) {
+
+                echo '<p class="err_message_filter">Sai trường thông tin</p>';
                 return;
             }
         }
 
-        if ((is_numeric($price_from)!=1 && $price_from!="" )||
-        ( is_numeric($price_to)!=1 && $price_to!= "")) {
-            
+        if (
+            (is_numeric($price_from) != 1 && $price_from != "") ||
+            (is_numeric($price_to) != 1 && $price_to != "")
+        ) {
+
             echo '<p class="err_message_filter">Sai trường thông tin</p>';
             return;
         } else {
-            if ( $price_from != "" &&  (float)$price_from  > $price_to != ""&& (float)$price_to) {
-                
+            if ($price_from != "" && (float) $price_from > $price_to != "" && (float) $price_to) {
+
                 echo '<p class="err_message_filter">Sai trường thông tin</p>';
                 return;
-            } 
-            if( (float)$price_from < 0 || (float)$price_to < 0 ){
-           
+            }
+            if ((float) $price_from < 0 || (float) $price_to < 0) {
+
                 echo '<p class="err_message_filter">Sai trường thông tin</p>';
                 return;
             }
@@ -677,52 +683,58 @@ $this->connection = new PDO("mysql:host=$this->severName; dbname=$this->database
 
         $filterjson = json_encode($filterArr);
 
-        $products = Product::filter($this->connection,$filterjson,$page);
-      
+        $products = Product::filter($this->connection, $filterjson, $page);
 
-        
+
+
 
 
         foreach ($products as $product) {
             $product->tags = [];
             $product->cat = [];
-            $idcats = fk_Cat::get_all_id_cat($this->connection,$product->id);
-            if($idcats != null){
-            foreach ($idcats as $idcat) {
-                $cat = Categories::findID($this->connection, $idcat->id_cat);
-                array_push($product->cat,$cat->cat_name);
+            $idcats = fk_Cat::get_all_id_cat($this->connection, $product->id);
+            if ($idcats != null) {
+                foreach ($idcats as $idcat) {
+                    $cat = Categories::findID($this->connection, $idcat->id_cat);
+                    array_push($product->cat, $cat->cat_name);
+                }
+            }
+            $idtags = fk_Tags::get_all_id_tag($this->connection, $product->id);
+            if ($idtags != null) {
+                foreach ($idtags as $idtag) {
+                    $tag = Tags::findID($this->connection, $idtag->id_tag);
+                    array_push($product->tags, $tag->tag_name);
+                }
             }
         }
-        $idtags = fk_Tags::get_all_id_tag($this->connection,$product->id);
-        if($idtags != null){
-        foreach ($idtags as $idtag) {
-            $tag = Tags::findID($this->connection, $idtag->id_tag);
-            array_push($product->tags,$tag->tag_name);
-        }
-    }   
-        }
-       
-       
-        echo '<p class="page-present" hidden>'; echo $page; echo '</p>';
+
+
+        echo '<p class="page-present" hidden>';
+        echo $page;
+        echo '</p>';
         foreach ($products as $product) {
 
-            
-                echo "
+
+            echo "
         <tr id='$product->id'>
         <td scope='col'> $product->date </td>
         <td scope='col'> $product->product_name </td>
         <td scope='col'> $product->sku </td>
-        <td scope='col'>";if($product->price>0){ echo$product->price;} echo"</td>
+        <td scope='col'>";
+            if ($product->price > 0) {
+                echo $product->price;
+            }
+            echo "</td>
         <td scope='col'>
             <img style='max-width: 80px;' src=";
-            
-                echo "$product->image alt=' '>
+
+            echo "$product->image alt=' '>
         </td>
         <td scope='col'>";
-        if (
-            is_array(json_decode($product->gallery))
-            && $product->gallery != null
-        ) {
+            if (
+                is_array(json_decode($product->gallery))
+                && $product->gallery != null
+            ) {
                 foreach (json_decode($product->gallery) as $gal) {
                     echo "<img style='max-width: 40px;' src=";
                     echo $GLOBALS['linkpath'];
@@ -731,51 +743,45 @@ $this->connection = new PDO("mysql:host=$this->severName; dbname=$this->database
                            ";
                 }
             }
-                echo " </td> <td scope='col'>";
-                foreach ($product->cat as $key => $cat) {
+            echo " </td> <td scope='col'>";
+            foreach ($product->cat as $cat) {
+                echo "<p>";
+                echo $cat;
+                echo "</p>";
+            }
 
-                    if ($key !== count($product->cat) - 1) {
-                        echo $cat . ", ";
-                    } else {
-                        echo $cat;
-                    };
-                }
-
-                echo "
+            echo "
         </td>
 
         <td scope='col'>";
 
-                foreach ($product->tags as $key => $tag) {
+            foreach ($product->tags as $tag) {
+                echo "<p>";
+                echo $tag;
+                echo "</p>";
+            }
 
-                    if ($key !== count($product->tags) - 1) {
-                        echo $tag . ", ";
-                    } else {
-                        echo $tag;
-                    };
-                }
-
-                echo "
+            echo "
         </td>
 
         <td style=''>
         <a href='index.php?controller=update_product&product_id=";
 
-                echo $product->id . "'style='color:black; margin-right:10px'>";
+            echo $product->id . "'style='color:black; margin-right:10px'>";
 
-                echo " <i id='' class='fa-solid fa-pencil update_icon'></i></a>
+            echo " <i id='' class='fa-solid fa-pencil update_icon'></i></a>
         <i class='fa-solid fa-trash delete_icon'></i>
         </td>
     </tr>
     
     ";
-            
+
         }
         echo "<input id='total_filter' type='hidden' value='";
-        if($products != null){
-            echo $page*5+5;
-        } else{
-            echo $page*5;
+        if ($products != null) {
+            echo $page * 5 + 5;
+        } else {
+            echo $page * 5;
         }
         echo "'>";
     }
@@ -783,20 +789,35 @@ $this->connection = new PDO("mysql:host=$this->severName; dbname=$this->database
     public function delete()
     {
         $id = $_GET['delete'];
-     
-        if(is_numeric($id)){
-            if (Product::findID($this->connection,$id) != null) {
-                Product::delete($this->connection,$id);
+
+        if (is_numeric($id)) {
+            if (Product::findID($this->connection, $id) != null) {
+                Product::delete($this->connection, $id);
                 echo 'success';
-            }
-            else{
-                echo "<script> loi </script>"; 
+            } else {
+                echo "<script> loi </script>";
             }
         }
-        
-       
-       
-        
+
+        $fk_cats = fk_Cat::get_all_id_cat($this->connection, $id);
+        if($fk_cats != null){
+            foreach ($fk_cats as $fk_cat) {
+                fk_Cat::delete_fk_cat($this->connection,$fk_cat->id_product, $fk_cat->id_cat);
+            }
+        }
+
+        $fk_tags = fk_Tags::get_all_id_tag($this->connection, $id);
+        if($fk_tags != null){
+            foreach ($fk_tags as $fk_tag) {
+                fk_Tags::delete_fk_tag($this->connection,$fk_tag->id_product, $fk_tag->id_tag);
+            }
+        }
+
+
+
+
+
+
     }
 
     public function addTag()
