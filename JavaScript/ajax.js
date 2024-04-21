@@ -90,7 +90,7 @@ function deleBtnFilter() {
 
         del.addEventListener('click', function (event) {
 
-          
+
             var idParent = del.closest('tr').id
             if (!regex.test(idParent)) {
 
@@ -99,7 +99,7 @@ function deleBtnFilter() {
 
             var xmlhttp = new XMLHttpRequest();
 
-          
+
 
             xmlhttp.open("GET", 'index.php?delete=' + idParent, true);
             xmlhttp.send();
@@ -113,7 +113,7 @@ function deleBtnFilter() {
             var price_from = document.querySelector('#price_from')
             var price_to = document.querySelector('#price_to')
             let str = document.querySelector("#search_input").value.trim()
-    let search = str
+            let search = str
 
             xmlhttp.onreadystatechange = function () {
                 if (this.readyState == 4 && this.status == 200) {
@@ -218,16 +218,20 @@ function filterPage() {
     let totalPage = document.querySelector('#total_filter').value
 
     totalPage = Math.ceil(totalPage / 5)
-    
-     var totalLi =""
+    if(document.querySelector('tbody').querySelectorAll('tr').length < 5){
+        totalPage --;
+    }
 
-     if(totalPage>1)
-    {for (let j = 1; j <= totalPage; j++) {
-        totalLi += `<li class="page-item"><a class="page-link page_filter${j} page_filter" href="#">${j}</a></li>`
-    }}
-    
-    if(totalLi != "")
-    pageFilerBtn.innerHTML = totalLi
+    var totalLi = ""
+
+    if (totalPage > 1) {
+        for (let j = 1; j <= totalPage; j++) {
+            totalLi += `<li class="page-item"><a class="page-link page_filter${j} page_filter" href="#">${j}</a></li>`
+        }
+    }
+
+    if (totalLi != "")
+        pageFilerBtn.innerHTML = totalLi
 
     let pageBtnNew = document.querySelectorAll('.page_filter')
     var sortby = document.querySelector('#sort_by')
@@ -244,7 +248,7 @@ function filterPage() {
 
     for (let i = 0; i < pageBtnNew.length; i++) {
         pageBtnNew[i].addEventListener('click', function (event) {
-           
+
             document.querySelector('.page-present').innerText = i + 1;
 
             var xmlhttp = new XMLHttpRequest();
@@ -265,9 +269,9 @@ function filterPage() {
 
             xmlhttp.onreadystatechange = function () {
                 if (this.readyState == 4 && this.status == 200) {
-                 
+
                     document.querySelector("tbody").innerHTML = this.responseText;
-                 
+
                     filterPage()
                     deleBtnFilter()
 

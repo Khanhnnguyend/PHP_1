@@ -177,9 +177,9 @@ class ControlAction
             }
             echo "</td>
         <td scope='col'>
-            <img style='max-width: 80px;' src=";
+            <img style='max-width: 80px;' src='";
 
-            echo "$product->image alt=' '>
+            echo "$product->image' alt=' '>
         </td>
         <td scope='col'>";
             if (
@@ -726,9 +726,9 @@ class ControlAction
             }
             echo "</td>
         <td scope='col'>
-            <img style='max-width: 80px;' src=";
+            <img style='max-width: 80px;' src=\"";
 
-            echo "$product->image alt=' '>
+            echo "$product->image\" alt=' '>
         </td>
         <td scope='col'>";
             if (
@@ -736,9 +736,9 @@ class ControlAction
                 && $product->gallery != null
             ) {
                 foreach (json_decode($product->gallery) as $gal) {
-                    echo "<img style='max-width: 40px;' src=";
-                    echo $GLOBALS['linkpath'];
-                    echo "$gal alt=' '>
+                    echo "<img style='max-width: 40px;' src='";
+                    
+                    echo "$gal'alt=' '>
                                 
                            ";
                 }
